@@ -32,6 +32,7 @@ def create_app():
     #         return jsonify(result)
     #     return jsonify({'error': 'The resource was not found'}), 404
     
+
     # 註冊
     @app.route("/user/signup",methods = ['POST'])
     def register():

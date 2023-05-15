@@ -1,5 +1,6 @@
 from extensions import db
 from database import *
+<<<<<<< HEAD
 # from werkzeug.security import check_password_hash
 
 # # 登入
@@ -23,6 +24,8 @@ from database import *
 
 
 
+=======
+>>>>>>> 1158f71a540eb14a36e6d9e61f18a07b7abb34af
 
 # 建立使用者
 def createUser(jsonData):
@@ -51,6 +54,7 @@ def createUser(jsonData):
         reputation_score = 100
     # 建立新使用者
     user = User(
+<<<<<<< HEAD
         password = password,
         role = role,
         nickname = nickname,
@@ -59,6 +63,16 @@ def createUser(jsonData):
         reputationScore = reputation_score,
         cellphone = cellphone,
         email = email
+=======
+        password=password,
+        role=role,
+        nickname=nickname,
+        gender=gender,
+        age=age,
+        reputationScore=reputation_score,
+        cellphone=cellphone,
+        email=email
+>>>>>>> 1158f71a540eb14a36e6d9e61f18a07b7abb34af
     )
 
     try:
@@ -69,6 +83,7 @@ def createUser(jsonData):
         return {'error': str(e)}, 500
 
 
+<<<<<<< HEAD
 # 使用者更新資料
 def updateUser(jsonData):
     # 從 JSON 數據中獲取用戶的新資訊
@@ -115,6 +130,14 @@ def updateUser(jsonData):
 
 
 
+=======
+# 使用者登入驗證
+
+# 使用者更新資料
+
+# 使用者更新密碼
+
+>>>>>>> 1158f71a540eb14a36e6d9e61f18a07b7abb34af
 # 刪除使用者
 def deleteUser(jsonData):
     # 擷取 JSON 數據中的使用者名稱
