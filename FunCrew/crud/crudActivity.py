@@ -1,11 +1,115 @@
 from extensions import db
 from database import *
+from dateutil.parser import parse
 
-# 新增活動
+
+# 顯示所有活動
+
+
+
+
+# 顯示使用者參加的活動
+def showMyActivity(jsonData):
+    pass
+
+
+
+def createActivity(jsonData):
+    # 讀取活動資訊
+    hostID = jsonData.get('hostID')
+    time = parse(jsonData.get('time')) if jsonData.get('time') else None
+    area = jsonData.get('area')
+    location = jsonData.get('location')
+    limitedNum = jsonData.get('limitedNum')
+    signUp = jsonData.get('signUp')
+    fee = jsonData.get('fee')
+    expireDate = parse(jsonData.get('expireDate')).date() if jsonData.get('expireDate') else None
+    status = jsonData.get('status')
+    activityName = jsonData.get('activityName')
+    intro = jsonData.get('intro')
+    category = jsonData.get('category')
+
+    # 檢查必要欄位是否存在
+    if not (hostID and time and area and location and limitedNum and signUp and fee and expireDate and status and type):
+        return {'error': 'Missing required fields'}, 400
+
+    # 檢查地區選項是否合法
+    area_options = [option[0] for option in Activity.area_option]
+    if area not in area_options:
+        return {'error': 'Invalid area'}, 400
+
+    # 檢查狀態選項是否合法
+    status_options = [option[0] for option in Activity.status_option]
+    if status not in status_options:
+        return {'error': 'Invalid status'}, 400
+
+    # 建立新活動
+    activity = Activity(
+        hostID=hostID,
+        activityName=activityName,
+        intro=intro,
+        status=status,
+        time=time,
+        area=area,
+        location=location,
+        limitedNum=limitedNum,
+        signUp=signUp,
+        fee=fee,
+        expireDate=expireDate,
+        category = category
+    )
+    try:
+        db.session.add(activity)
+        db.session.commit()
+        return {'message': 'Activity created successfully'}, 201
+    except Exception as e:
+        return {'error': str(e)}, 500
+
+
+
+
 
 # 刪除活動
+def deleteActivity(jsonData):
+    # 讀取活動 ID
+    activityID = jsonData.get('activityID')
+    if activityID is None:
+        return {'error': 'Missing activity ID'}, 400
+    # 在資料庫中查找活動
+    activity = Activity.query.get(activityID)
+    if activity is None:
+        return {'error': 'Activity not found'}, 404
+    # 檢查當前用戶是否為活動主辦者
+    # if current_user.userID != activity.hostID:  # 新增
+    #     return {'error': 'Only the host can delete the activity'}, 403  # 新增
+    # 刪除活動
+    try:
+        db.session.delete(activity)
+        db.session.commit()
+        return {'message': 'Activity deleted successfully'}, 200
+    except Exception as e:
+        return {'error': str(e)}, 500
+
+
+
+# 修改活動
+def modifyActivity(jsonData):
+    pass
+
 
 # 加入活動
+def joinActivity(jsonData):
+    pass
 
 # 退出活動
+def leaveActivity(jsonData):
+    pass
+
+# 評分
+def rateActivity(jsonData):
+    pass
+
+# 留言討論
+def engageActivity(jsonData):
+    pass
 

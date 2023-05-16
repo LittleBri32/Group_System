@@ -26,7 +26,7 @@ from database import *
 
 # 建立使用者
 def createUser(jsonData):
-    # 擷取 JSON 數據中的使用者資訊
+    # 讀取使用者資訊
     password = jsonData.get('password')
     role = jsonData.get('role')
     nickname = jsonData.get('nickname')
@@ -71,7 +71,7 @@ def createUser(jsonData):
 
 # 使用者更新資料
 def updateUser(jsonData):
-    # 從 JSON 數據中獲取用戶的新資訊
+    # 讀取使用者資訊
     nickname = jsonData.get('nickname')
     password = jsonData.get('password')
     role = jsonData.get('role')
@@ -80,7 +80,7 @@ def updateUser(jsonData):
     reputation_score = jsonData.get('reputationScore')
     cellphone = jsonData.get('cellphone')
     email = jsonData.get('email')
-    # 首先，我們需要找到要更新的用戶
+    # 首先找到要更新的用戶
     user = User.query.filter_by(nickname=nickname).first()
     # 如果找不到用戶，則返回一個錯誤
     if user is None:
@@ -100,7 +100,6 @@ def updateUser(jsonData):
         user.cellphone = cellphone
     if email is not None:
         user.email = email
-
     # 儲存更新
     try:
         db.session.commit()
@@ -117,14 +116,13 @@ def updateUser(jsonData):
 
 # 刪除使用者
 def deleteUser(jsonData):
-    # 擷取 JSON 數據中的使用者名稱
+    # 讀取使用者資訊
     nickname = jsonData.get('nickname')
     # 檢查必要欄位是否存在
     if not nickname:
         return {'error': 'Missing required field'}, 400
     # 查詢使用者
     user = User.query.filter_by(nickname=nickname).first()
-    # 如果找不到該使用者
     if not user:
         return {'error': 'User not found'}, 404
 

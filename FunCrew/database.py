@@ -28,6 +28,11 @@ class User(db.Model):
 class Activity(db.Model):
     __tablename__ = 'Activity'
     activityID = db.Column(db.Integer, primary_key=True , autoincrement=True)
+    activityName = db.Column(db.String(30))
+    intro = db.Column(db.Text)
+    category = db.Column(db.String(1))
+    status = db.Column(db.String(1))
+    hostID = db.Column(db.Integer, db.ForeignKey('User.userID'))
     time = db.Column(db.DateTime)
     area = db.Column(db.String(1))
     location = db.Column(db.String(30))
@@ -35,7 +40,8 @@ class Activity(db.Model):
     signUp = db.Column(db.Integer)
     fee = db.Column(db.Integer)
     expireDate = db.Column(db.Date)
-    status = db.Column(db.String(1))
+
+    host = db.relationship('User', backref='activities') 
     area_option = [
         ("N", "北部"),
         ("W", "西部"),
@@ -48,15 +54,30 @@ class Activity(db.Model):
         ("A", "可加入"),
         ("E", "已結束"),
     ]
+    category_option = [
+        ("1", "出門"),
+        ("2", "聚會"),
+        ("3", "團購"),
+        ("4", "搭車"),
+        ("5", "其他")
+    ]
+    
 
 
-# 建立 Category table
-class Category(db.Model):
-    __tablename__ = 'Category'
-    categoryActivityID = db.Column(db.Integer, db.ForeignKey('Activity.activityID'), primary_key = True)
-    category = db.Column(db.String(10), primary_key = True)
+# # 建立 Category table
+# class Category(db.Model):
+#     __tablename__ = 'Category'
+#     categoryActivityID = db.Column(db.Integer, db.ForeignKey('Activity.activityID'), primary_key = True)
+#     category = db.Column(db.String(1), primary_key = True)
 
-    activity = db.relationship('Activity', backref='categories')
+#     activity = db.relationship('Activity', backref='categories')
+#     category_option = [
+#         ("1", "出門"),
+#         ("2", "聚會"),
+#         ("3", "團購"),
+#         ("4", "搭車"),
+#         ("5", "其他")
+#     ]
 
 
 # 建立 Discussion table
@@ -72,17 +93,6 @@ class Discussion(db.Model):
     activity = db.relationship('Activity', backref='discussions')
 
 
-# 建立 Organizer table
-class Organizer(db.Model):
-    __tablename__ = 'Organizer'
-    organizerUserID = db.Column(db.Integer, db.ForeignKey('User.userID'), primary_key=True)
-    organizerActivityID = db.Column(db.Integer, db.ForeignKey('Activity.activityID'), primary_key=True)
-    raterUserID = db.Column(db.Integer, db.ForeignKey('User.userID'), primary_key=True)
-    organizerScore = db.Column(db.Integer, nullable=False)
-
-    user = db.relationship('User', foreign_keys=[organizerUserID])
-    activity = db.relationship('Activity', foreign_keys=[organizerActivityID])
-    rater_user = db.relationship('User', foreign_keys=[raterUserID])
 
 
 # 建立 Participant table
@@ -90,12 +100,10 @@ class Participant(db.Model):
     __tablename__ = 'Participant'
     participantUserID = db.Column(db.Integer, db.ForeignKey('User.userID'), primary_key=True)
     participantActivityID = db.Column(db.Integer, db.ForeignKey('Activity.activityID'), primary_key=True)
-    raterUserID = db.Column(db.Integer, db.ForeignKey('User.userID'), primary_key=True)
-    score = db.Column(db.Integer)
 
     user = db.relationship('User', foreign_keys=[participantUserID])
     activity = db.relationship('Activity', foreign_keys=[participantActivityID])
-    rater_user = db.relationship('User', foreign_keys=[raterUserID])
+
 
 
 # 建立 Post table
