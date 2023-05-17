@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>註冊帳戶</title>
+    <meta name="google" content="notranslate">
+</head>
+
+<body>
+    <h1>註冊帳戶</h1>
+    <br>
+    <div><a href="/">回到首頁</a></div>
+    <br>
+    <hr>
+    <form action="{{ url_for('sign_up') }}" method="POST">
+        nickname<br>
+        <input type="text" name="nickname" /></br>
+        gender<br>
+        <input type="text" name="gender" /></br>
+        age<br>
+        <input type="int" name="age" /></br>
+        cellphone<br>
+        <input type="text" name="cellphone" /><br>
+        email<br>
+        <input type="text" name="email" /><br>
+        設定密碼<br>
+        <input type="password" name="password" /><br><br>
+        <button>註冊</button>
+    </form>
+</body>
+
+</html>
