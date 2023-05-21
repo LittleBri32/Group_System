@@ -4,6 +4,42 @@ from dateutil.parser import parse
 
 
 # 顯示所有活動
+# def showAllActivity(activityType):
+#     if activityType and activityType != "ALL":
+#         activities = Activity.query.filter(Activity.status.in_(['F', 'A']), Activity.type==activityType).all()
+#     else:
+#         activities = Activity.query.filter(Activity.status.in_(['F', 'A'])).all()
+    
+#     result = {'activities': list(activities)}
+#     return result, 200
+def showAllActivity(activityType):
+    if activityType and activityType != "ALL":
+        activities = Activity.query.filter(Activity.status.in_(['F', 'A']), Activity.type==activityType).all()
+    else:
+        activities = Activity.query.filter(Activity.status.in_(['F', 'A'])).all()
+
+    activities_list = []
+
+    for activity in activities:
+        activities_list.append({
+            'activityID': activity.activityID,
+            'title': activity.title,
+            'intro': activity.intro,
+            'time': activity.time,
+            'area': activity.area,
+            'location': activity.location,
+            'category': activity.category,
+            'peopleLimited': activity.peopleLimited,
+            'signUp': activity.signUp,
+            'fee': activity.fee,
+            'expireDate': activity.expireDate,
+            'status': activity.status,
+            'hostID': activity.hostID,
+        })
+
+    result = {'activities': activities_list}
+    return result, 200
+
 
 
 
@@ -16,21 +52,22 @@ def showMyActivity(jsonData):
 
 def createActivity(jsonData):
     # 讀取活動資訊
-    hostID = jsonData.get('hostID')
+    intro = jsonData.get('intro')
     time = parse(jsonData.get('time')) if jsonData.get('time') else None
     area = jsonData.get('area')
     location = jsonData.get('location')
-    limitedNum = jsonData.get('limitedNum')
+    peopleLimited = jsonData.get('peopleLimited')
     signUp = jsonData.get('signUp')
     fee = jsonData.get('fee')
+    title = jsonData.get('title')
+
+    category = jsonData.get('category')
     expireDate = parse(jsonData.get('expireDate')).date() if jsonData.get('expireDate') else None
     status = jsonData.get('status')
-    activityName = jsonData.get('activityName')
-    intro = jsonData.get('intro')
-    category = jsonData.get('category')
+    hostID = jsonData.get('hostID')
 
     # 檢查必要欄位是否存在
-    if not (hostID and time and area and location and limitedNum and signUp and fee and expireDate and status and type):
+    if not (hostID and time and area and location and peopleLimited and signUp and fee and expireDate and status and type):
         return {'error': 'Missing required fields'}, 400
 
     # 檢查地區選項是否合法
@@ -45,17 +82,17 @@ def createActivity(jsonData):
 
     # 建立新活動
     activity = Activity(
-        hostID=hostID,
-        activityName=activityName,
-        intro=intro,
-        status=status,
-        time=time,
-        area=area,
-        location=location,
-        limitedNum=limitedNum,
-        signUp=signUp,
-        fee=fee,
-        expireDate=expireDate,
+        hostID = hostID,
+        title = title,
+        intro = intro,
+        status = status,
+        time = time,
+        area = area,
+        location = location,
+        peopleLimited = peopleLimited,
+        signUp = signUp,
+        fee = fee,
+        expireDate = expireDate,
         category = category
     )
     try:

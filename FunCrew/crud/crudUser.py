@@ -28,7 +28,6 @@ from database import *
 def createUser(jsonData):
     # 讀取使用者資訊
     password = jsonData.get('password')
-    role = jsonData.get('role')
     nickname = jsonData.get('nickname')
     gender = jsonData.get('gender')
     age = jsonData.get('age')
@@ -36,14 +35,14 @@ def createUser(jsonData):
     cellphone = jsonData.get('cellphone')
     email = jsonData.get('email')
     # 檢查必要欄位是否存在
-    if not (password and role and nickname and gender):
+    if not (password and nickname and gender):
         return {'error': 'Missing required fields'}, 400
     # 檢查性別選項是否合法
     gender_options = [option[0] for option in User.genderOption]
     if gender not in gender_options:
         return {'error': 'Invalid gender'}, 400
     # 檢查使用者名稱是否已存在
-    existingUser = User.query.filter_by(nickname=nickname).first()
+    existingUser = User.query.filter_by(nickname = nickname).first()
     if existingUser:
         return {'error': 'User with this nickname already exists'}, 400
     # 如果 reputationScore 不存在，將其設置為預設值 100
@@ -52,7 +51,6 @@ def createUser(jsonData):
     # 建立新使用者
     user = User(
         password = password,
-        role = role,
         nickname = nickname,
         gender = gender,
         age = age,
@@ -74,7 +72,6 @@ def updateUser(jsonData):
     # 讀取使用者資訊
     nickname = jsonData.get('nickname')
     password = jsonData.get('password')
-    role = jsonData.get('role')
     gender = jsonData.get('gender')
     age = jsonData.get('age')
     reputation_score = jsonData.get('reputationScore')
@@ -88,8 +85,6 @@ def updateUser(jsonData):
     # 更新用戶資訊
     if password is not None:
         user.password = password
-    if role is not None:
-        user.role = role
     if gender is not None:
         user.gender = gender
     if age is not None:
