@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>貼文集合區</title>
+    <style>
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #f2f2f2;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .button {
+            margin-right: 16px;
+            border: none;
+        }
+
+        /*貼文樣式*/
+        .post {
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+
+        .post .info {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .post .content {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div class="header-left">
+            <button class="button"><a href="/home"> 🥂 </a></button>
+            <button class="button"><a href="/postArea">貼文</a></button>
+            <button class="button">關於我們</button>
+        </div>
+        <div class="header-right">
+            <button class="button">主辦活動</button>
+            <button class="button"><a href="/logout">登出</a></button>
+            <h4>{{ nickname }}</h4>
+        </div>
+    </div>
+
+    <div class="post-form">
+        <form action="/submitPost" method="post">
+            <div class="input">
+                <h4>{{ nickname }}</h4>
+                <input type="text" name="content" id="post-input" placeholder="輸入貼文內容">
+                <button type="submit">發布貼文</button>
+            </div>
+        </form>
+    </div>
+
+    {% for post in posts %}
+    <div class="post">
+        <div class="info">
+            <span>{{ post['postTime'] }}</span>
+            <span>By: {{ get_nickname(post['postUserID']) }}</span>
+        </div>
+        <div class="content">
+            <p>{{ post['postContent'] }}</p>
+        </div>
+    </div>
+    {% endfor %}
+
+</body>
+
+</html>
