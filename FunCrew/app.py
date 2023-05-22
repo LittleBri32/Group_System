@@ -25,14 +25,14 @@ def create_app():
     
     # User
     # ----------------------------------------------------------------
-    # # 登入
-    # @app.route("/user/signin",methods = ['POST'])
-    # def login():
-    #     if request.method == "POST":
-    #         jsonDict = request.get_json()
-    #         result, statusCode = loginUser(jsonDict)
-    #         return jsonify(result)
-    #     return jsonify({'error': 'The resource was not found'}), 404
+    # 登入
+    @app.route("/user/login",methods = ['POST'])
+    def login():
+        if request.method == "POST":
+            jsonDict = request.get_json()
+            result, statusCode = loginUser(jsonDict)
+            return jsonify(result)
+        return jsonify({'error': 'The resource was not found'}), 404
     
 
     # 註冊
@@ -53,8 +53,6 @@ def create_app():
             return jsonify(result)
         return jsonify({'error': 'The resource was not found'}), 404
 
-    # 使用者更新密碼
-
     # 刪除使用者
     @app.route("/user/delete",methods = ['POST'])
     def removeUser():
@@ -63,6 +61,45 @@ def create_app():
             result, statusCode = deleteUser(jsonDict)
             return jsonify(result)
         return jsonify({'error': 'The resource was not found'}), 404
+    
+    # 忘記密碼
+    @app.route("/user/forgetPassword",methods = ['POST'])
+    def forgetPassword():
+        if request.method == "POST":
+            jsonDict = request.get_json()
+            result, statusCode = forgetedPassword(jsonDict)
+            return jsonify(result)
+        return jsonify({'error': 'The resource was not found'}), 404
+    
+    # 聯繫客服
+    @app.route("/user/help",methods = ['POST'])
+    def helpp():
+        if request.method == "POST":
+            jsonDict = request.get_json()
+            result, statusCode = helpMe(jsonDict)
+            return jsonify(result)
+        return jsonify({'error': 'The resource was not found'}), 404
+    
+
+    # 個人資訊
+    @app.route("/user/info",methods = ['POST'])
+    def info():
+        if request.method == "POST":
+            jsonDict = request.get_json()
+            result, statusCode = myInfo(jsonDict)
+            return jsonify(result)
+        return jsonify({'error': 'The resource was not found'}), 404
+    
+
+    # 他人資訊
+    @app.route("/user/otherInfo",methods = ['POST'])
+    def otherInfo():
+        if request.method == "POST":
+            jsonDict = request.get_json()
+            result, statusCode = hisInfo(jsonDict)
+            return jsonify(result)
+        return jsonify({'error': 'The resource was not found'}), 404
+    
     
     # Activity
     # ----------------------------------------------------------------
@@ -147,6 +184,24 @@ def create_app():
             result, statusCode = engageActivity(jsonDict)
             return jsonify(result)
         return jsonify({'error': 'The resource was not found'}), 404
+    
+    # Post
+    # ----------------------------------------------------------------
+    # 顯示所有貼文
+    @app.route("/post",methods = ['POST'])
+    def showAllPosts():
+        if request.method == "POST":
+            jsonDict = request.get_json()
+            result, statusCode = showThePost(jsonDict)
+            return jsonify(result)
+        return jsonify({'error': 'The resource was not found'}), 404
+
+
+
+
+
+
+
 
 
     with app.app_context():

@@ -2,24 +2,24 @@ from extensions import db
 from database import *
 # from werkzeug.security import check_password_hash
 
-# # 登入
-# def loginUser(jsonData):
-#     # 從 JSON 中提取使用者資料
-#     nickname = jsonData.get('nickname')
-#     password = jsonData.get('password')
+# 登入
+def loginUser(jsonData):
+    # 從 JSON 中提取使用者資料
+    nickname = jsonData.get('nickname')
+    password = jsonData.get('password')
 
-#     # 檢查必要欄位是否存在
-#     if not (nickname and password):
-#         return {'error': '缺少必要欄位'}, 400
-#     # 在資料庫中查詢使用者
-#     user = User.query.filter_by(nickname=nickname).first()
-#     # 檢查使用者是否存在並且密碼是否正確
-#     if user and check_password_hash(user.password, password):
-#         # 如果登入成功，回傳成功訊息
-#         return {'message': '登入成功'}, 200
-#     else:
-#         # 如果登入失敗，回傳錯誤訊息
-#         return {'error': '無效的憑證'}, 401
+    # 檢查必要欄位是否存在
+    if not (nickname and password):
+        return {'error': '缺少必要欄位'}, 400
+    # 在資料庫中查詢使用者
+    user = User.query.filter_by(nickname=nickname).first()
+    # 檢查使用者是否存在並且密碼是否正確
+    if user and check_password_hash(user.password, password):
+        # 如果登入成功，回傳成功訊 息
+        return {'message': '登入成功'}, 200
+    else:
+        # 如果登入失敗，回傳錯誤訊息
+        return {'error': '無效的憑證'}, 401
 
 
 
@@ -129,3 +129,22 @@ def deleteUser(jsonData):
     except Exception as e:
         return {'error': str(e)}, 500
 
+# 忘記密碼
+def forgetedPassword(jsonDict):
+    pass
+
+
+# 聯繫客服
+def helpMe(jsonDict):
+    pass
+
+
+
+# 個人資訊
+def myInfo(jsonDict):
+    pass
+
+
+# 他人資訊
+def hisInfo(jsonDict):
+    pass
