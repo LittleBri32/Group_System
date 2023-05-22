@@ -1,18 +1,23 @@
 from extensions import db
 from database import *
+from flask import Blueprint, request
 # from werkzeug.security import check_password_hash
 
+user_bp = Blueprint('user', __name__)
+
+
 # 登入
-def loginUser(jsonData):
+@user_bp.route('/login', methods=['POST'])
+def login(jsonData):
     # 從 JSON 中提取使用者資料
-    nickname = jsonData.get('nickname')
+    email = jsonData.get('email')
     password = jsonData.get('password')
 
     # 檢查必要欄位是否存在
-    if not (nickname and password):
+    if not (email and password):
         return {'error': '缺少必要欄位'}, 400
     # 在資料庫中查詢使用者
-    user = User.query.filter_by(nickname=nickname).first()
+    user = User.query.filter_by(email= email).first()
     # 檢查使用者是否存在並且密碼是否正確
     if user and check_password_hash(user.password, password):
         # 如果登入成功，回傳成功訊 息
@@ -25,7 +30,10 @@ def loginUser(jsonData):
 
 
 # 建立使用者
-def createUser(jsonData):
+@user_bp.route('/signup', methods=['POST'])
+def register():
+    if request.method == "POST":
+        jsonData = request.get_json()
     # 讀取使用者資訊
     password = jsonData.get('password')
     nickname = jsonData.get('nickname')
@@ -68,7 +76,10 @@ def createUser(jsonData):
 
 
 # 使用者更新資料
+@user_bp.route("/update",methods = ['POST'])
 def updateUser(jsonData):
+    if request.method == "POST":
+        jsonData = request.get_json()
     # 讀取使用者資訊
     nickname = jsonData.get('nickname')
     password = jsonData.get('password')
@@ -110,7 +121,10 @@ def updateUser(jsonData):
 
 
 # 刪除使用者
+@user_bp.route("/delete",methods = ['POST'])
 def deleteUser(jsonData):
+    if request.method == "POST":
+        jsonData = request.get_json()
     # 讀取使用者資訊
     nickname = jsonData.get('nickname')
     # 檢查必要欄位是否存在
@@ -130,21 +144,25 @@ def deleteUser(jsonData):
         return {'error': str(e)}, 500
 
 # 忘記密碼
-def forgetedPassword(jsonDict):
+@user_bp.route("/forgetPassword",methods = ['POST'])
+def forgetePassword(jsonDict):
     pass
 
 
 # 聯繫客服
-def helpMe(jsonDict):
+@user_bp.route("/help",methods = ['POST'])
+def help(jsonDict):
     pass
 
 
 
 # 個人資訊
+@user_bp.route("/info",methods = ['POST'])
 def myInfo(jsonDict):
     pass
 
 
 # 他人資訊
-def hisInfo(jsonDict):
+@user_bp.route("/otherInfo",methods = ['POST'])
+def otherInfo(jsonDict):
     pass

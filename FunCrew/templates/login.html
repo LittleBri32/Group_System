@@ -1,1 +1,60 @@
-<!-- 登入頁面 -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+</head>
+<body>
+    <form id="loginForm" action="/user/login" method="post">
+        <label for="email">Email:</label><br>
+        <input type="text" id="email" name="email" required><br>
+        <label for="password">Password:</label><br>
+        <input type="password" id="password" name="password" required><br>
+        <input type="submit" value="Login">
+    </form>
+
+    <a href="register.html">Sign Up</a>
+
+    <script>
+        document.getElementById("loginForm").addEventListener("submit", function(event) {
+            // 防止表單自動提交
+            event.preventDefault();
+
+            // 取得輸入的值
+            var email = document.getElementById("email").value;
+            var password = document.getElementById("password").value;
+
+            // 建立 JSON 物件
+            var userData = {
+                "email": email,
+                "password": password
+            };
+
+            // 轉換為 JSON 字串
+            var jsonData = JSON.stringify(userData);
+
+            // 發送 POST 請求
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/user/login", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        // 處理成功回應
+                        console.log("登入成功！");
+                    } else {
+                        // 處理錯誤回應
+                        console.error("登入失敗：" + xhr.responseText);
+                    }
+                }
+            };
+
+            xhr.send(jsonData);
+
+
+
+
+        });
+    </script>
+</body>
+</html>

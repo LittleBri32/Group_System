@@ -1,17 +1,14 @@
 from extensions import db
 from database import *
 from dateutil.parser import parse
+from flask import Blueprint, request
+
+
+activity_bp = Blueprint('Activity', __name__)
 
 
 # 顯示所有活動
-# def showAllActivity(activityType):
-#     if activityType and activityType != "ALL":
-#         activities = Activity.query.filter(Activity.status.in_(['F', 'A']), Activity.type==activityType).all()
-#     else:
-#         activities = Activity.query.filter(Activity.status.in_(['F', 'A'])).all()
-    
-#     result = {'activities': list(activities)}
-#     return result, 200
+@activity_bp.route("/activity/all",methods = ['POST'])
 def showAllActivity(activityType):
     if activityType and activityType != "ALL":
         activities = Activity.query.filter(Activity.status.in_(['F', 'A']), Activity.type==activityType).all()
@@ -45,11 +42,14 @@ def showAllActivity(activityType):
 
 
 # 顯示使用者參加的活動
+@activity_bp.route("/my",methods = ['POST'])
 def showMyActivity(jsonData):
     pass
 
 
 
+# 發起活動
+@activity_bp.route("/create",methods = ['POST'])
 def createActivity(jsonData):
     # 讀取活動資訊
     intro = jsonData.get('intro')
@@ -107,6 +107,8 @@ def createActivity(jsonData):
 
 
 # 刪除活動
+@activity_bp.route("/activity/delete",methods = ['POST'])
+
 def deleteActivity(jsonData):
     # 讀取活動 ID
     activityID = jsonData.get('activityID')
@@ -130,23 +132,28 @@ def deleteActivity(jsonData):
 
 
 # 修改活動
+@activity_bp.route("/update",methods = ['POST'])
 def modifyActivity(jsonData):
     pass
 
 
 # 加入活動
+@activity_bp.route("/join",methods = ['POST'])
 def joinActivity(jsonData):
     pass
 
 # 退出活動
+@activity_bp.route("/leave",methods = ['POST'])
 def leaveActivity(jsonData):
     pass
 
 # 評分
+@activity_bp.route("/rate",methods = ['POST'])
 def rateActivity(jsonData):
     pass
 
 # 留言討論
+@activity_bp.route("/discussion",methods = ['POST'])
 def engageActivity(jsonData):
     pass
 
