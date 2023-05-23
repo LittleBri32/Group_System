@@ -1,35 +1,48 @@
-<!-- 首頁 -->
-
 <!DOCTYPE html>
-<html lang="en">
-<head>
-        <meta charset="UTF-8">
-        <title>Home</title>
-</head>
-<body>
-        <h1>My Website Text</h1>
-        <!-- <table border="1">
-                <tr>
-                        <td>Text Text Text</td>
-                        <td>Text Text Text</td>
-                        <td>Text Text Text</td>
-                </tr>
-                <tr>
-                        <td>Text Text Text</td>
-                        <td>Text Text Text</td>
-                        <td>Text Text Text</td>
-                </tr>
-                <tr>
-                        <td>Text Text Text</td>
-                        <td>Text Text Text</td>
-                        <td>Text Text Text</td>
-                </tr>
-        </table> -->
+<html>
 
-        <!-- 新增的表單 -->
-        <form action="/user/signup" method="post">
-        <!-- 你可能想要增加一些 input 欄位來收集使用者資訊 -->
-                <input type="submit" value="Register">
-        </form>
+<head>
+    <title>首頁</title>
+    <style>
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #f2f2f2;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .button {
+            margin-right: 16px;
+            border: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div class="header-left">
+            <button class="button"><a href="/home"> 🥂 </a></button>
+            <button class="button"><a href="/post/area">貼文</a></button>
+            <button class="button">關於我們</button>
+        </div>
+        <div class="header-right">
+            <button class="button">主辦活動</button>
+            <button class="button"><a href="/user/logout">登出</a></button>
+            <h4>{{ nickname }}</h4>
+        </div>
+    </div>
+
 </body>
+
 </html>
