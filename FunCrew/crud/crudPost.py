@@ -40,7 +40,7 @@ def submitPost():
         cur = con.cursor()
 
         # 取得當前使用者的userID
-        userID = session.get["userID"]
+        userID = session.get("userID")
 
         # 取得當前時間
         postTime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -56,4 +56,4 @@ def submitPost():
         con.close()
 
     # 重新導向到貼文區域
-    return redirect("/postArea")
+    return redirect("/post/area")
