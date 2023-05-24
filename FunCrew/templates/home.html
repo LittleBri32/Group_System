@@ -43,6 +43,16 @@
         </div>
     </div>
 
+    <h3>最新貼文</h3>
+    <div class="post">
+        {% for post in posts %}
+        <div>
+            <span>By: {{ post['nickname'] }}</span>
+            <p>{{ post['postContent'] }}</p>
+        </div>
+        {% endfor %}
+    </div>
+
 </body>
 
 </html>

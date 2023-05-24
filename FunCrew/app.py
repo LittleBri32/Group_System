@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, session
-from datetime import datetime
+import sqlite3 as sql
 from crud import crudActivity, crudPost, crudUser
+from crud.crudUser import get_nickname
 
 
 app = Flask(__name__)
@@ -8,10 +9,9 @@ app.secret_key = "nccucs"
 
 
 # 把三個模組註冊到 app 中
-app.register_blueprint(crudUser.user_bp, url_prefix = '/user')
-app.register_blueprint(crudActivity.activity_bp, url_prefix = '/activity')
-app.register_blueprint(crudPost.post_bp, url_prefix = '/post')
-
+app.register_blueprint(crudUser.user_bp, url_prefix="/user")
+app.register_blueprint(crudActivity.activity_bp, url_prefix="/activity")
+app.register_blueprint(crudPost.post_bp, url_prefix="/post")
 
 
 # 跳轉到登入頁面
@@ -35,25 +35,28 @@ def registration_success():
 # 跳轉到首頁畫面
 @app.route("/home")
 def home():
-    if "nickname" in session:
-        return render_template("home.html", nickname=session["nickname"])
+    if "userID" in session:
+        # 建立與資料庫的連線
+        con = sql.connect("funCrew_db.db")
+        con.row_factory = sql.Row
+        cur = con.cursor()
+
+        nickname = get_nickname(session["userID"])
+        print(session["userID"])
+
+        # 從資料庫中獲取最新的三篇貼文
+        cur.execute(
+            "SELECT * FROM Post, User WHERE postUserID = userID ORDER BY postTime DESC LIMIT 3"
+        )
+        posts = cur.fetchall()
+
+        # 關閉資料庫連線
+        con.close()
+        return render_template("home.html", nickname=nickname, posts=posts)
     else:
-        return render_template("/")
-    # 檢查有沒有存在nickname
-    if "nickname" in session:
-        nickname = session["nickname"]
-    else:
-        nickname = ""
-    # 關閉資料庫連線
-    con.close()
-    # 傳遞貼文內容和使用者暱稱的函式到 postArea.html 進行顯示
-    return render_template("postArea.html", posts=posts, get_nickname=get_nickname)
+        return render_template("login.html")
 
-
-    
-
-    
 
 if __name__ == "__main__":
     app.secret_key = "super secret key"
-    app.run(debug=True, port = 5000)
+    app.run(debug=True, port=3215)

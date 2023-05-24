@@ -1,13 +1,10 @@
 from flask import Blueprint, request, render_template, session, redirect
 from .crudUser import get_nickname
 import sqlite3 as sql
+from datetime import datetime
 
+post_bp = Blueprint("post", __name__)
 
-post_bp = Blueprint('post', __name__)
-
-
-
-    
 
 # 貼文顯示處理
 @post_bp.route("/area", methods=["GET"])
@@ -18,25 +15,18 @@ def postArea():
     cur = con.cursor()
 
     # 從資料庫中獲取所有貼文內容，按照最新的放在最上面
-    cur.execute("SELECT * FROM Post ORDER BY postTime DESC")
+    cur.execute(
+        "SELECT * FROM Post, User WHERE postUserID = userID ORDER BY postTime DESC"
+    )
     posts = cur.fetchall()
-
-    # 檢查有沒有存在nickname
-    if "nickname" in session:
-        nickname = session["nickname"]
-    else:
-        nickname = ""
 
     # 關閉資料庫連線
     con.close()
 
     # 傳遞貼文內容和使用者暱稱的函式到 postArea.html 進行顯示
     return render_template(
-        "postArea.html", posts=posts, get_nickname=get_nickname, nickname=nickname
+        "postArea.html", posts=posts, nickname=get_nickname(session["userID"])
     )
-
-        
-
 
 
 # 貼文發布處理
@@ -50,9 +40,7 @@ def submitPost():
         cur = con.cursor()
 
         # 取得當前使用者的userID
-        nickname = session.get("nickname")
-        cur.execute("SELECT userID FROM User WHERE nickname=?", (nickname,))
-        userID = cur.fetchone()[0]
+        userID = session.get["userID"]
 
         # 取得當前時間
         postTime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")

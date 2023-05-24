@@ -3,10 +3,11 @@ import sqlite3 as sql
 
 
 # 模組套件
-user_bp = Blueprint('user', __name__)
+user_bp = Blueprint("user", __name__)
 
 # 此處為 user_bp 模組，所以路徑為 @user_bp.route("<>",)
 # 在 html 引用時，需設路徑為 "/user/sign_in" 樣子
+
 
 # 登入處理
 @user_bp.route("/sign_in", methods=["GET", "POST"])
@@ -31,18 +32,16 @@ def sign_in():
         if len(people) == 0:
             return render_template("login.html", msg=msg)
         cur.execute(
-            "SELECT nickname FROM User WHERE email=? and password=?",
+            "SELECT userID FROM User WHERE email=? and password=?",
             (
                 email,
                 password,
             ),
         )
-        nickname = cur.fetchone()[0]
-        session["nickname"] = nickname
+        userID = cur.fetchone()[0]
+        session["userID"] = userID
     # 點選登入btn後會切回home首頁
     return redirect("/home")
-
-
 
 
 # 登出處理
@@ -52,8 +51,6 @@ def logout():
     session.pop("nickname", None)
     # 導向登入頁面
     return render_template("login.html")
-
-
 
 
 # 註冊處理
@@ -101,7 +98,6 @@ def signupPost():
         return render_template("register.html", msg=msg)
     finally:
         con.close()
-
 
 
 # 取得使用者暱稱的函式
