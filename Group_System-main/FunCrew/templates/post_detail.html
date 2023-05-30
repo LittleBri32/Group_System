@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ post['postTitle'] }}</title>
+    <style>
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #f2f2f2;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .button {
+            margin-right: 16px;
+            border: none;
+        }
+
+        /*貼文樣式*/
+        .post {
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+
+        .post .info {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .post .content {
+            margin-top: 0px;
+        }
+    </style>
+</head>
+
+<body>
+    <p>{{ post['nickname'] }}</p>
+    <p>{{ post['postTime'] }}</p>
+    <h1>{{ post['postTitle'] }}</h1>
+    <p>{{ post['postContent'] }}</p>
+    
+    <br>
+    <button><a href="/post/posts" style="text-decoration:none; color:black">返回帖文主頁</a></button>
+    <br><br>
+
+    <h2>留言區</h2>
+    <form action="/post/posts/{{ postID }}" method="post">
+        <div class="input">
+            <input type="text" name="content" placeholder="輸入留言內容" required>
+            <button type="submit">留言</button>
+        </div>
+    </form>
+    <br>
+    {% for comment in comments %}
+    <div class="post">
+        <div class="content">
+                <p style="font-size:24px;">{{ comment['nickname'] }}</p>
+                <p>{{ comment['commentContent'] }}</p>
+            </a>
+        </div>
+        <div class="info">
+            <span>{{ comment['commentTime'] }}</span>
+        </div>
+
+        {% if comment['commentUserID'] == userID %}
+        <div>
+            <button><a href="/post/posts/update_comment/{{comment['commentID']}}" style="text-decoration:none; color:black">修改留言</button>
+            <button><a href="/post/posts/delete_comment/{{comment['commentID']}}" style="text-decoration:none; color:black">刪除留言</button>
+        </div>
+        {% endif %}
+
+    </div>
+    {% endfor %}
+</body>
