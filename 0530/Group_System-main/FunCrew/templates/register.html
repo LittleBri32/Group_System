@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>註冊頁面</title>
+    <style>
+        .center {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>新帳號設定 (會員註冊)</h1>
+    <div class="center">
+        <form action="/user/signupPost" method="POST">
+            <label for="email">Email（作為你的帳號）：</label>
+            <input type="email" id="email" name="email" required><br>
+
+            <label for="password">密碼：</label>
+            <input type="password" id="password" name="password" required><br>
+
+            <label for="check_password">再次確認密碼：</label>
+            <input type="password" id="check_password" name="check_password" required><br>
+
+            <label for="cellphone">手機號碼：</label>
+            <input type="text" id="cellphone" name="cellphone" required><br>
+
+            <label for="nickname">暱稱：</label>
+            <input type="text" id="nickname" name="nickname" required><br>
+
+            <label for="gender">性別：</label>
+            <select id="gender" name="gender" required>
+                <option value="M">男</option>
+                <option value="F">女</option>
+            </select><br>
+
+            <label for="birth">生日：</label>
+            <input type="date" id="birth" name="birth" required><br>
+
+            <!-- 檢查是否有錯誤訊息 -->
+            {% if msg %}
+            <p>{{ msg }}</p>
+            {% endif %}
+
+            <button>註冊</button>
+        </form>
+        <button><a href="/">回登入畫面</a></button>
+    </div>
+
+</body>
+
+</html>

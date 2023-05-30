@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>貼文集合區</title>
+    <style>
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #f2f2f2;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .button {
+            margin-right: 16px;
+            border: none;
+        }
+
+        /*貼文樣式*/
+        .post {
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+
+        .post .info {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .post .content {
+            margin-top: 0px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div class="header-left">
+            <button class="button"><a href="/home"> 🥂 </a></button>
+            <button class="button"><a href="/post/area">貼文</a></button>
+            <button class="button">關於我們</button>
+        </div>
+        <div class="header-right">
+            <button class="button">主辦活動</button>
+            <button class="button"><a href="/user/logout">登出</a></button>
+            <h4>{{ nickname }}</h4>
+        </div>
+    </div>
+
+    <br>
+    <div>
+        <button><a href="/post/create_post" style="text-decoration:none; color:black">發布貼文</a></button>
+    </div>
+    <br>
+
+    {% for post in posts %}
+    
+    <div class="post">
+        <div class="content">
+            <a href="/post/posts/{{post['postID']}}" style="text-decoration:none; color:black">
+                <p style="font-size:24px;">{{ post['postTitle'] }}</p>
+                <p>{{ post['postContent'] }}</p>
+            </a>
+        </div>
+        <div class="info">
+            <span>{{ post['postTime'] }}</span>
+            <span>By: {{ post['nickname'] }}</span>
+        </div>
+    </div>
+    {% endfor %}
+
+</body>
+
+</html>

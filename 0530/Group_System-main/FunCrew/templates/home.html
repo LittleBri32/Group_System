@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>首頁</title>
+    <style>
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #f2f2f2;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .button {
+            margin-right: 16px;
+            border: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div class="header-left">
+            <button class="button"><a href="/home"> 🥂 </a></button>
+            <button class="button"><a href="/post/posts">貼文</a></button>
+            <button class="button">關於我們</button>
+        </div>
+        <div class="header-right">
+            <button class="button">主辦活動</button>
+            <button class="button"><a href="/user/logout">登出</a></button>
+            <button class="button"></button><h4><a href="/user/personalInfo">{{ nickname }}</a></h4></button>
+        </div>
+    </div>
+
+    <h3>最新貼文</h3>
+    <div class="post">
+        {% for post in posts %}
+        <div>
+            <span>By: {{ post['nickname'] }}</span>
+            <p>{{ post['postContent'] }}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+</body>
+
+</html>
