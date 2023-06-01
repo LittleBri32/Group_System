@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>我的留言集合區</title>
+    <style>
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #f2f2f2;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .button {
+            margin-right: 16px;
+            border: none;
+        }
+
+        /*貼文樣式*/
+        .post {
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+
+        .post .info {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .post .content {
+            margin-top: 0px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div class="header-left">
+            <button class="button"><a href="/home"> 🥂 </a></button>
+            <button class="button"><a href="/post/posts/newest">貼文</a></button>
+            <button class="button">關於我們</button>
+        </div>
+        <div class="header-right">
+            <button class="button">主辦活動</button>
+            <button class="button"><a href="/user/logout">登出</a></button>
+            <h4>{{ nickname }}</h4>
+        </div>
+    </div>
+    <br>
+    <div class="header">
+        <div class="header-left">
+            <form method="POST">
+                <button class="submit" name="newest"><a href="/post/posts/newest">最新</a></button>
+                <button class="submit" name="mostView"><a href="/post/posts/mostView">最多觀看</a></button>
+                <button class="submit" name="hotest"><a href="/post/posts/hotest">討論熱烈</a></button>
+            </form>
+        </div>
+        <div class="header-right">
+            <form action="/post/posts/searching" method="POST">
+                <input type="text" name="searching_value" placeholder="輸入標題或使用者名稱" required>
+                <input type="submit" name="post_search_button" value="搜尋">
+            </form>
+            <button class="button"><a href="/post/create_post" style="text-decoration:none; color:black">發布貼文</a></button>
+            <button class="button"><a href="/post/posts/my_posts" style="text-decoration:none; color:black">我的貼文</a></button>
+            <button class="button"><a href="/post/my_comments" style="text-decoration:none; color:black">我的留言</a></button>
+        </div>
+    </div>
+    <br>
+
+    <h1>我的留言</h1>
+
+    {% if not comments %}
+    <div>
+        <p>你真的沒話想對我說嗎？</p>
+    </div>
+    <br>
+    {% endif %}
+
+    {% for comment in comments %}
+    <div class="post">
+        <div class="content">
+            <a href="/post/posts/{{comment['commentPostID']}}" style="text-decoration:none; color:black">
+                <p style="font-size:24px;">於帖文：{{ comment['postTitle'] }}</p>
+                <p>{{ comment['commentContent'] }}</p>
+            </a>
+        </div>
+        <div class="info">
+            <span>{{ comment['commentTime'] }}</span>
+        </div>
+        <br>
+        <div>
+            <button><a href="/post/posts/update_comment/{{comment['commentID']}}" style="text-decoration:none; color:black">修改留言</button>
+            <button><a href="/post/posts/delete_comment/{{comment['commentID']}}" style="text-decoration:none; color:black">刪除留言</button>
+        </div>
+    </div>
+    {% endfor %}
+
+</body>
+
+</html>
