@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>首頁</title>
+        <style>
+            .header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 10px;
+                background-color: #f2f2f2;
+            }
+    
+            .header-left {
+                display: flex;
+                align-items: center;
+            }
+    
+            .header-right {
+                display: flex;
+                align-items: center;
+            }
+    
+            .button {
+                margin-right: 16px;
+                border: none;
+            }
+        </style>
+    </head>
+    
+    <body>
+        <div class="header">
+            <div class="header-left">
+                <button class="button"><a href="/home"> 🥂 </a></button>
+                <button class="button"><a href="/post/area">貼文</a></button>
+                <button class="button">關於我們</button>
+            </div>
+            <div class="header-right">
+                <button class="button"><a href="/activity/hostActivity">發起活動</a></button>
+                <button class="button"><a href="/user/logout">登出</a></button>
+            </div>
+        </div>
+        <div class="showActivityInfo">
+            <h3>{{nickname}}</h3>
+            {% for i in info %}
+            <p>{{info[0]['title']}}</p><br/>
+            <p>{{info[0]['area']}}</p><br/>
+            <p>{{info[0]['location']}}</p><br/>
+            <p>{{info[0]['Intro']}}</p><br/>
+            <p>{{info[0]['createDateTime']}}</p><br/>
+            <p>{{info[0]['organizerUserID']}}</p><br/>
+            {% endfor %}
+            <!-- <h4>userID = {{userID}}</h4>{{userID}} -->
+        </div>
+        <div class="changeActivity">
+            {% if userID ==  info[0]['organizerUserID'] %}
+            <form action="/activity/delAct/{{info[0]['activityID']}}" method="POST">
+                <button>刪除活動</button>
+            </form>
+            <a href="/activity/hostActivity/{{ info[0][0] }}"><button>修改活動</button></a>
+            {% else %}
+            {% if session['userID'] not in member %}
+            <form action="/activity/signUpSuccess/{{ info[0][0] }}" method="POST">
+                <button>報名活動</button>                
+            </form>
+            {% endif %}
+            {% endif %}
+        </div>
+        {% if session['userID'] != info[0]['organizerUserID'] and session['userID'] in member %}
+        <form action="/activity/rating/{{info[0][0]}}"  method="POST">
+        <label for="rating">聚會類型*</label>
+            <select id="rating" name="rating" required>
+                {% for i in range(1,6) %}
+                    <option value={{i}}>{{i}}</option>
+                {% endfor %}
+            </select><br>
+        <input type="submit" value="送出">
+        </form>
+        {% endif %}
+
+
+        {% if msg %}
+        <p>{{ msg }}</p>
+        {% endif %}
+    
+    </body>
+    </html>

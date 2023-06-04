@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, session
 import sqlite3 as sql
 from crud import crudActivity, crudPost, crudUser
 from crud.crudUser import get_nickname
-
+from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = "nccucs"
@@ -50,9 +50,17 @@ def home():
         )
         posts = cur.fetchall()
 
-        # 關閉資料庫連線
+         # 從資料庫中獲取全部活動 by杜
+        cur.execute(
+            "SELECT * FROM Activity"
+        )
+        info = cur.fetchall()
+        time = {}
+        for i in range(len(info)):
+            createTime = str(datetime.fromtimestamp(int(info[i]['createTime'])))
+            time[info[i]['activityID']] = createTime
         con.close()
-        return render_template("home.html", nickname=nickname, posts=posts)
+        return render_template("home.html", nickname=nickname, posts=posts, info=info, time = time)
     else:
         return render_template("login.html")
 

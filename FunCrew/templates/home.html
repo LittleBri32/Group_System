@@ -37,7 +37,7 @@
             <button class="button">關於我們</button>
         </div>
         <div class="header-right">
-            <button class="button">主辦活動</button>
+            <button class="button"><a href="/activity/hostActivity/home">發起活動</a></button>
             <button class="button"><a href="/user/logout">登出</a></button>
             <h4>{{ nickname }}</h4>
         </div>
@@ -51,6 +51,23 @@
             <p>{{ post['postContent'] }}</p>
         </div>
         {% endfor %}
+    </div>
+    <h3>熱門貼文</h3>
+    <div class="post">
+        
+        <div>
+            {{nickname}}
+            {% for activity in info %}
+            <p><a href="/activity/showAct/{{activity['activityID']}}">{{ activity['title'] }}</a></p>
+            <p>{{ activity['area'] }}</p>
+            <p>{{ time[activity['activityID']] }}</p>
+            <p>{{ activity['Intro'] }}</p>
+            <form action="/activity/showAct/{{activity['activityID']}}">
+                <button>查看活動</button>
+            </form>
+            {% endfor %}
+        </div>
+        
     </div>
 
 </body>
