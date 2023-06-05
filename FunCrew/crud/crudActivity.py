@@ -14,12 +14,23 @@ def hostActivity(id):
     '苗栗縣','彰化縣','南投縣','雲林縣','嘉義縣','屏東縣','宜蘭縣','花蓮縣',
     '臺東縣','澎湖縣','金門縣','連江縣','基隆市','新竹市','嘉義市','其他']
     categoryList = ['影音展演','商業投資','遊戲卡牌','體驗學習','旅行出遊','其他']
+
+    
     if id != 'home' :
         fun = 'update'
+        con = sql.connect("funCrew_db.db")
+        con.row_factory = sql.Row
+        cur = con.cursor()
+        cur.execute(
+            "SELECT * FROM Activity WHERE activityID = '%s' " %(id)
+        )
+        info = cur.fetchall()
+        return render_template("hostActivity.html", cityList = cityList, categoryList = categoryList,
+            fun = fun, nickname = nickname, id = id, info = info)
     else:
         fun = 'create'    
-    return render_template("hostActivity.html", cityList = cityList, categoryList = categoryList,
-        fun = fun, nickname = nickname, id = id)
+        return render_template("hostActivity.html", cityList = cityList, categoryList = categoryList,
+            fun = fun, nickname = nickname, id = id)
 
 #成功報名頁面
 @activity_bp.route("/signUpSuccess/<string:id>", methods=["GET","POST"])
@@ -28,12 +39,8 @@ def signUpSuccess(id):
         with sql.connect("funCrew_db.db") as con:
             cur = con.cursor()
             cur.execute(
-                "INSERT INTO Participant \
-                    (participantUserID, participantActivityID)\
-                    VALUES (?, ?)",
-                (
-                    session['userID'],id
-                ),
+                "INSERT INTO Participant (participantUserID, participantActivityID)\
+                VALUES (?, ?)",(session['userID'],id),
             )
             con.commit()
     except Exception as e:
@@ -42,7 +49,7 @@ def signUpSuccess(id):
         msg = f"活動讀取失敗！請確認你的資料。錯誤訊息：{str(e)}"
     return render_template("signUpSuccess.html")
 
-
+#參加名單(id:活動id)
 def joinList(id):
     con = sql.connect("funCrew_db.db")
     con.row_factory = sql.Row
@@ -58,44 +65,58 @@ def joinList(id):
         member.append(i[0]) #userID
     return member
 
+# show personalActivity.html
 @activity_bp.route("/show/<string:id>", methods=["POST","GET"])
 def show(id):
     try:
-        nickname = get_nickname(session["userID"])
-        userID = session["userID"]
-
+        info = {}
+        info['nickname'] = get_nickname(session["userID"])
+        info['userID'] = session["userID"]
+        info['signUp'] = len(joinList(id))
         con = sql.connect("funCrew_db.db")
         con.row_factory = sql.Row
         cur = con.cursor()
         cur.execute(
             "SELECT * FROM Activity WHERE activityID = '%s' " %(id)
         )
-        info = cur.fetchall()
+        data = cur.fetchall()
+        info['createDate'] = str(datetime.fromtimestamp(int(data[0]['createTime'])))
+        info['expireDate'] = data[0]['expireDate']
+        info['time'] = data[0]['time']
+        info['title'] = data[0]['title']
+        info['area'] = data[0]['area']
+        info['location'] = data[0]['location']
+        info['Intro'] = data[0]['Intro']
+        info['organizerUserID'] = data[0]['organizerUserID']
+        info['hostName'] = get_nickname( info['organizerUserID'])
+        info['activityID'] = data[0]['activityID']
+
         cur.execute(
-            "SELECT * FROM Discussion WHERE discussionActivityID = '%s' ORDER BY discussionTime DESC" %(id)
+            "SELECT * FROM Discussion WHERE discussionActivityID = '%s' \
+                ORDER BY discussionTime DESC" %(id)
         )
         comment = cur.fetchall()
-
         nickname = {}
         time = {}
         for i in comment:
             nickname[i['discussionUserID']] = get_nickname(i['discussionUserID'])
             time[i['discussionUserID']] = str(datetime.fromtimestamp(int(i['discussionTime'])))
+        
     except Exception as e:
         print(e)
         con.rollback()
         msg = f"刪除活動失敗！請確認你的資料。錯誤訊息：{str(e)}"
-        return render_template("signUpSuccess.html", msg=msg)
+        return render_template("home.html", msg=msg)
     return render_template(
-        "personalActivity.html", info = info, userID = userID,
-            nickname = nickname, member = joinList(id),time = time
+        "personalActivity.html", info = info,
+         member = joinList(id), time = time, nickname = nickname, comment = comment
     )
      
 # 創立、更新
 # 使用者在 hostActivity.html 提交表單的時候會執行
 @activity_bp.route("/submitActivity/<string:id>", methods=["POST"])
 def submitActivity(id):
-    # try:
+    try:
         title = request.form["title"]
         Intro = request.form["Intro"]
         location = request.form["location"]
@@ -137,13 +158,13 @@ def submitActivity(id):
             con.commit()
         # 跳轉到 personalActivity 頁面
         return show(id)
-    # except Exception as e:
-    #     print(e)
-    #     con.rollback()
-    #     msg = f"活動創建失敗！請確認你的資料。錯誤訊息：{str(e)}"
-    #     return render_template("home.html", msg=msg)
-    # finally:
-    #     con.close()
+    except Exception as e:
+        print(e)
+        con.rollback()
+        msg = f"活動創建失敗！請確認你的資料。錯誤訊息：{str(e)}"
+        return render_template("home.html", msg=msg)
+    finally:
+        con.close()
 
 #刪除活動
 @activity_bp.route("/delAct/<string:activityID>", methods=["GET","POST"])

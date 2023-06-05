@@ -59,11 +59,11 @@
             <!-- {{nickname}} -->
             {% for activity in info %}
             <p>{{ name[activity['activityID']] }}</p>
-            <p><a href="/activity/showAct/{{activity['activityID']}}">{{ activity['title'] }}</a></p>
+            <p><a href="/activity/show/{{activity['activityID']}}">{{ activity['title'] }}</a></p>
             <p>{{ activity['area'] }}</p>
             <p>{{ time[activity['activityID']] }}</p>
             <p>{{ activity['Intro'] }}</p>
-            <form action="/activity/showAct/{{activity['activityID']}}">
+            <form action="/activity/show/{{activity['activityID']}}">
                 <button>查看活動</button>
             </form>
             {% endfor %}
