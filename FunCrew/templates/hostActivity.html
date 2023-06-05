@@ -91,13 +91,13 @@
             <input id="fee" name="fee" required><br>
 
             <label for="area">聚會城市*</label>
-            <select id="area" name="area" required>
+            <select id="area" name="area">
                 {% for i in cityList %}
                     <option value={{i}}>{{i}}</option>
                 {% endfor %}
             </select><br>
             <label for="category">聚會類型*</label>
-            <select id="category" name="category" required>
+            <select id="category" name="category">
                 {% for i in categoryList %}
                     <option value={{i}}>{{i}}</option>
                 {% endfor %}

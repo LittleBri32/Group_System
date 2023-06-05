@@ -9,6 +9,7 @@ activity_bp = Blueprint('activity', __name__)
 #顯示創建活動的頁面
 @activity_bp.route("/hostActivity/<string:id>", methods=["GET"])
 def hostActivity(id):
+    nickname = get_nickname(session["userID"])
     cityList = ['臺北市','新北市','桃園市','臺中市','臺南市','高雄市','新竹縣',
     '苗栗縣','彰化縣','南投縣','雲林縣','嘉義縣','屏東縣','宜蘭縣','花蓮縣',
     '臺東縣','澎湖縣','金門縣','連江縣','基隆市','新竹市','嘉義市','其他']
@@ -18,7 +19,7 @@ def hostActivity(id):
     else:
         fun = 'create'    
     return render_template("hostActivity.html", cityList = cityList, categoryList = categoryList,
-        fun = fun, nickname=get_nickname(session["userID"]), id = id)
+        fun = fun, nickname = nickname, id = id)
 
 #成功報名頁面
 @activity_bp.route("/signUpSuccess/<string:id>", methods=["GET","POST"])
@@ -41,26 +42,6 @@ def signUpSuccess(id):
         msg = f"活動讀取失敗！請確認你的資料。錯誤訊息：{str(e)}"
     return render_template("signUpSuccess.html")
 
-#創建活動後顯示活動頁面
-def showActivity(Id, actID):
-    try:
-        con = sql.connect("funCrew_db.db")
-        con.row_factory = sql.Row
-        cur = con.cursor()
-        cur.execute(
-            "SELECT * FROM Activity, User WHERE activityID = '%s' and userID ='%d' \
-                and organizerUserID = userID " %(actID, Id)
-        )
-        info = cur.fetchall()
-        return render_template(
-            "personalActivity.html", info=info, userID = session["userID"],\
-                nickname=get_nickname(session["userID"]),  member = joinList(id)
-        )
-    except Exception as e:
-        print(e)
-        con.rollback()
-        msg = f"活動讀取失敗！請確認你的資料。錯誤訊息：{str(e)}"
-        return render_template("home.html", msg=msg)
 
 def joinList(id):
     con = sql.connect("funCrew_db.db")
@@ -68,7 +49,7 @@ def joinList(id):
     cur = con.cursor()
     cur.execute(
         "SELECT participantUserID FROM Participant \
-        WHERE participantActivityID = '%s'"\
+        WHERE participantActivityID = '%s'" 
         %(id)
     )
     info = cur.fetchall()
@@ -76,26 +57,45 @@ def joinList(id):
     for i in info:
         member.append(i[0]) #userID
     return member
-@activity_bp.route("/showAct/<string:id>", methods=["POST","GET"])
-def showAct(id):
-    con = sql.connect("funCrew_db.db")
-    con.row_factory = sql.Row
-    cur = con.cursor()
-    cur.execute(
-        "SELECT * FROM Activity WHERE activityID = '%s' " %(id)
-    )
-    info = cur.fetchall()
-    print(info[0]['area'])
+
+@activity_bp.route("/show/<string:id>", methods=["POST","GET"])
+def show(id):
+    try:
+        nickname = get_nickname(session["userID"])
+        userID = session["userID"]
+
+        con = sql.connect("funCrew_db.db")
+        con.row_factory = sql.Row
+        cur = con.cursor()
+        cur.execute(
+            "SELECT * FROM Activity WHERE activityID = '%s' " %(id)
+        )
+        info = cur.fetchall()
+        cur.execute(
+            "SELECT * FROM Discussion WHERE discussionActivityID = '%s' ORDER BY discussionTime DESC" %(id)
+        )
+        comment = cur.fetchall()
+
+        nickname = {}
+        time = {}
+        for i in comment:
+            nickname[i['discussionUserID']] = get_nickname(i['discussionUserID'])
+            time[i['discussionUserID']] = str(datetime.fromtimestamp(int(i['discussionTime'])))
+    except Exception as e:
+        print(e)
+        con.rollback()
+        msg = f"刪除活動失敗！請確認你的資料。錯誤訊息：{str(e)}"
+        return render_template("signUpSuccess.html", msg=msg)
     return render_template(
-        "personalActivity.html", info = info, userID = session["userID"],\
-            nickname=get_nickname(session["userID"]), member = joinList(id)
+        "personalActivity.html", info = info, userID = userID,
+            nickname = nickname, member = joinList(id),time = time
     )
      
 # 創立、更新
 # 使用者在 hostActivity.html 提交表單的時候會執行
 @activity_bp.route("/submitActivity/<string:id>", methods=["POST"])
 def submitActivity(id):
-    try:
+    # try:
         title = request.form["title"]
         Intro = request.form["Intro"]
         location = request.form["location"]
@@ -136,15 +136,14 @@ def submitActivity(id):
                 )
             con.commit()
         # 跳轉到 personalActivity 頁面
-        return showActivity(userID, id)
-        # return render_template("personalActivity.html", activityID = id, userID = userID)
-    except Exception as e:
-        print(e.message)
-        con.rollback()
-        msg = f"活動創建失敗！請確認你的資料。錯誤訊息：{str(e)}"
-        return render_template("home.html", msg=msg)
-    finally:
-        con.close()
+        return show(id)
+    # except Exception as e:
+    #     print(e)
+    #     con.rollback()
+    #     msg = f"活動創建失敗！請確認你的資料。錯誤訊息：{str(e)}"
+    #     return render_template("home.html", msg=msg)
+    # finally:
+    #     con.close()
 
 #刪除活動
 @activity_bp.route("/delAct/<string:activityID>", methods=["GET","POST"])
@@ -188,5 +187,95 @@ def rating(id):
         con.rollback()
         msg = f"刪除活動失敗！請確認你的資料。錯誤訊息：{str(e)}"
         return render_template("signUpSuccess.html", msg=msg)
+    finally:
+        con.close()
+
+# 留言區
+@activity_bp.route("/comment/<string:id>", methods=["POST","GET"])
+def comment(id):                
+    try:
+        comment = request.form["comment"]
+        with sql.connect("funCrew_db.db") as con:
+            cur = con.cursor()
+        if len(comment) > 0:
+            tn = datetime.now() 
+            ts = str(round(tn.timestamp()))
+            cur.execute(
+                "INSERT INTO Discussion \
+                    (discussionUserID, discussionActivityID, discussionTime, discussionContent) \
+                    VALUES(?, ?, ?, ?)",
+                (session['userID'],id,ts,comment),
+            )
+            con.commit()
+        # 跳轉到 personalActivity 頁面
+        return show(id)
+    except Exception as e:
+        print(e)
+        con.rollback()
+        msg = f"活動創建失敗！請確認你的資料。錯誤訊息：{str(e)}"
+        return render_template("home.html", msg=msg)
+    finally:
+        con.close()
+@activity_bp.route("/show/<int:id>", methods=["POST","GET"])
+def updateComment(id):                
+    with sql.connect("funCrew_db.db") as con:
+        cur = con.cursor()
+        cur.execute(
+            "SELECT * FROM Discussion WHERE discussionID = '%d'" %(id)
+        )
+        comment = cur.fetchall()
+        content  = comment[0][4]
+        print(content)
+        id = comment[0][0]
+        time = str(datetime.fromtimestamp(int(comment[0][3])))
+    return render_template("updateComment.html", content = content,
+        time = time, nickname=get_nickname(comment[0][1]), id = id)
+@activity_bp.route("/update/<int:id>", methods=["POST","GET"])
+def update(id):                
+    try:
+        comment = request.form["comment"]
+        print(comment)
+        with sql.connect("funCrew_db.db") as con:
+            cur = con.cursor()
+            tn = datetime.now() 
+            ts = str(round(tn.timestamp()))
+            cur.execute(
+                "SELECT discussionActivityID FROM Discussion WHERE discussionID = '%d'" %(id)
+            )
+            actID = cur.fetchall()
+            cur.execute(
+                "UPDATE  Discussion SET discussionContent = '%s' \
+                WHERE discussionID = '%d'" %(comment,id)
+            )
+            con.commit()
+        # 跳轉到 personalActivity 頁面
+        return show(actID[0][0])
+    except Exception as e:
+        print(e)
+        con.rollback()
+        msg = f"活動創建失敗！請確認你的資料。錯誤訊息：{str(e)}"
+        return render_template("home.html", msg=msg)
+    finally:
+        con.close()
+@activity_bp.route("/delete/<int:id>", methods=["POST","GET"])
+def delete(id):                
+    try:
+        with sql.connect("funCrew_db.db") as con:
+            cur = con.cursor()
+            cur.execute(
+                "SELECT discussionActivityID FROM Discussion WHERE discussionID = '%d'" %(id)
+            )
+            actID = cur.fetchall()
+            cur.execute(
+                "DELETE FROM Discussion WHERE discussionID = '%d'" %(id)
+            )
+            con.commit()            
+        # 跳轉到 personalActivity 頁面
+        return show(actID[0][0])
+    except Exception as e:
+        print(e)
+        con.rollback()
+        msg = f"活動創建失敗！請確認你的資料。錯誤訊息：{str(e)}"
+        return render_template("home.html", msg=msg)
     finally:
         con.close()

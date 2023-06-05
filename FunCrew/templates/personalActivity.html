@@ -41,26 +41,24 @@
             </div>
         </div>
         <div class="showActivityInfo">
-            <h3>{{nickname}}</h3>
+            
             {% for i in info %}
-            <p>{{info[0]['title']}}</p><br/>
-            <p>{{info[0]['area']}}</p><br/>
-            <p>{{info[0]['location']}}</p><br/>
-            <p>{{info[0]['Intro']}}</p><br/>
-            <p>{{info[0]['createDateTime']}}</p><br/>
-            <p>{{info[0]['organizerUserID']}}</p><br/>
+            <p>{{info[0]['title']}}</p>
+            <p>{{info[0]['area']}}</p>
+            <p>{{info[0]['location']}}</p>
+            <p>{{info[0]['Intro']}}</p>
+            <p>{{info[0]['createDateTime']}}</p>
             {% endfor %}
-            <!-- <h4>userID = {{userID}}</h4>{{userID}} -->
         </div>
         <div class="changeActivity">
-            {% if userID ==  info[0]['organizerUserID'] %}
+            {% if session["userID"] ==  info[0]["organizerUserID"] %}
             <form action="/activity/delAct/{{info[0]['activityID']}}" method="POST">
                 <button>刪除活動</button>
             </form>
             <a href="/activity/hostActivity/{{ info[0][0] }}"><button>修改活動</button></a>
             {% else %}
             {% if session['userID'] not in member %}
-            <form action="/activity/signUpSuccess/{{ info[0][0] }}" method="POST">
+            <form action="/activity/signUpSuccess/{{info[0][0]}}" method="POST">
                 <button>報名活動</button>                
             </form>
             {% endif %}
@@ -78,10 +76,29 @@
         </form>
         {% endif %}
 
+        <h3>留言區</h3>
+        <form action="/activity/comment/{{info[0]['activityID']}}" method="POST">
+            <input type="text" id="comment" name="comment">
+            <input type="submit" value="留言">
+        </form>
+        {% for i in comment %}
+        <div>
+            <h2>{{nickname[i['discussionUserID']]}}</h2><!--  連結至個人主頁 -->
+            <p>{{i['discussionContent']}}</p>
+            <p>{{time[i['discussionUserID']]}}</p>
+            {% if i['discussionUserID'] == session['userID']%}
+            <form action="/activity/show/{{i['discussionID']}}" method="POST">
+                <input type="submit" value="修改留言">
+            </form>
+            <form action="/activity/delete/{{i['discussionID']}}" method="POST">
+                <input type="submit" value=刪除留言>
+            </form>
+            {% endif %}
+            <hr/>
 
-        {% if msg %}
-        <p>{{ msg }}</p>
-        {% endif %}
+        </div>
+        {% endfor %}
+
     
     </body>
     </html>

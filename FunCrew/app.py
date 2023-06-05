@@ -56,11 +56,17 @@ def home():
         )
         info = cur.fetchall()
         time = {}
+        name = {}
         for i in range(len(info)):
             createTime = str(datetime.fromtimestamp(int(info[i]['createTime'])))
             time[info[i]['activityID']] = createTime
+            name[info[i]['activityID']] = get_nickname(info[i]['organizerUserID'])
         con.close()
-        return render_template("home.html", nickname=nickname, posts=posts, info=info, time = time)
+        
+        return render_template(
+            "home.html", nickname=nickname, posts=posts, info=info, 
+            time = time, name = name
+        )
     else:
         return render_template("login.html")
 

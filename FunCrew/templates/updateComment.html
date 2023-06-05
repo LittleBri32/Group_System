@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>首頁</title>
+        <style>
+            .header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 10px;
+                background-color: #f2f2f2;
+            }
+    
+            .header-left {
+                display: flex;
+                align-items: center;
+            }
+    
+            .header-right {
+                display: flex;
+                align-items: center;
+            }
+    
+            .button {
+                margin-right: 16px;
+                border: none;
+            }
+        </style>
+    </head>
+    
+    <body>
+        <div>
+            <p>{{nickname}}</p><!--  連結至個人主頁 -->
+            <p>{{time}}</p>
+            <form action="/activity/update/{{id}}" method="POST">
+                <input type="text" id="comment" name="comment" value = "{{content}}">
+                <input type="submit" value=修改>
+            </form>
+        </div>
+
+    
+    </body>
+    </html>
