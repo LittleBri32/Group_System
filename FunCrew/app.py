@@ -4,7 +4,7 @@ from flask_mail import Mail, Message
 import os
 import sqlite3 as sql
 from crud.crudUser import get_nickname
-
+from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = "nccucs"
@@ -62,9 +62,23 @@ def home():
         )
         posts = cur.fetchall()
 
-        # 關閉資料庫連線
+         # 從資料庫中獲取全部活動 by杜
+        cur.execute(
+            "SELECT * FROM Activity"
+        )
+        info = cur.fetchall()
+        time = {}
+        name = {}
+        for i in range(len(info)):
+            createTime = str(datetime.fromtimestamp(int(info[i]['createTime'])))
+            time[info[i]['activityID']] = createTime
+            name[info[i]['activityID']] = get_nickname(info[i]['organizerUserID'])
         con.close()
-        return render_template("home.html", nickname=nickname, posts=posts)
+        
+        return render_template(
+            "home.html", nickname=nickname, posts=posts, info=info, 
+            time = time, name = name
+        )
     else:
         return render_template("login.html")
     

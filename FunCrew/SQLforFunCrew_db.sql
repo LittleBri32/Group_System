@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS "User" (
 	PRIMARY KEY("userID" AUTOINCREMENT)
 );
 CREATE TABLE IF NOT EXISTS "Activity" (
-	"activityID"	INTEGER,
+	"activityID" VARCHAR(36),
 	"title"	VARCHAR(10),
 	"time"	TEXT,
 	"area"	TEXT,
@@ -25,12 +25,13 @@ CREATE TABLE IF NOT EXISTS "Activity" (
 	"status"	CHAR(1),
 	"organizerUserID"	INTEGER,
 	"Intro"	VARCHAR(50),
+	"createTime"	TEXT,
 	FOREIGN KEY("organizerUserID") REFERENCES "User"("userID"),
-	PRIMARY KEY("activityID" AUTOINCREMENT)
+	PRIMARY KEY("activityID" )
 );
 CREATE TABLE IF NOT EXISTS "Participant" (
 	"participantUserID"	INTEGER,
-	"participantActivityID"	INTEGER,
+	"participantActivityID"	VARCHAR(36),
 	"score"	INTEGER,
 	FOREIGN KEY("participantUserID") REFERENCES "User"("userID"),
 	FOREIGN KEY("participantActivityID") REFERENCES "Activity"("activityID"),
@@ -39,7 +40,7 @@ CREATE TABLE IF NOT EXISTS "Participant" (
 CREATE TABLE IF NOT EXISTS "Discussion" (
 	"discussionID"	INTEGER,
 	"discussionUserID"	INTEGER,
-	"discussionActivityID"	INTEGER,
+	"discussionActivityID"	VARCHAR(36),
 	"discussionTime"	TEXT,
 	"discussionContent"	TEXT,
 	FOREIGN KEY("discussionUserID") REFERENCES "User"("userID"),
