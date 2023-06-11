@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 from crud import crudActivity, crudPost, crudUser
 from flask import Flask, render_template, request, redirect, session, url_for, flash
 from flask_mail import Mail, Message
@@ -6,6 +7,13 @@ import os
 import sqlite3 as sql
 from crud.crudUser import get_nickname
 from datetime import datetime
+=======
+from flask import Flask, render_template, request, redirect, session
+import sqlite3 as sql
+from crud import crudActivity, crudPost, crudUser
+from crud.crudUser import get_nickname
+import os
+>>>>>>> 48581ce84ffa5977ff410d7daedaf1bff9788d64
 
 app = Flask(__name__)
 app.secret_key = "nccucs"
@@ -25,6 +33,8 @@ app.register_blueprint(crudUser.user_bp, url_prefix="/user")
 app.register_blueprint(crudActivity.activity_bp, url_prefix="/activity")
 app.register_blueprint(crudPost.post_bp, url_prefix="/post")
 
+UPLOAD_FOLDER = os.path.join(os.getcwd(), 'static')
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
 # 跳轉到登入頁面
@@ -53,10 +63,29 @@ def home():
         con = sql.connect("funCrew_db.db")
         con.row_factory = sql.Row
         cur = con.cursor()
+<<<<<<< HEAD
+=======
 
         nickname = get_nickname(session["userID"])
         print(session["userID"])
 
+        # 從資料庫中獲取最新的三篇貼文
+        cur.execute(
+            "SELECT * FROM Post, User WHERE postUserID = userID ORDER BY postTime DESC LIMIT 3"
+        )
+        posts = cur.fetchall()
+
+        # 關閉資料庫連線
+        con.close()
+        return render_template("home.html", nickname=nickname, posts=posts)
+    else:
+        return render_template("login.html")
+>>>>>>> 48581ce84ffa5977ff410d7daedaf1bff9788d64
+
+        nickname = get_nickname(session["userID"])
+        print(session["userID"])
+
+<<<<<<< HEAD
         # 從資料庫中獲取最新的三篇貼文
         cur.execute(
             "SELECT * FROM Post, User WHERE postUserID = userID ORDER BY postTime DESC LIMIT 3"
@@ -208,3 +237,8 @@ if __name__ == "__main__":
     app.secret_key = "super secret key"
     app.run(debug=True, port=1478)
 >>>>>>> 33051bed98904439ae0f547c68265c3ad9f28ffc
+=======
+if __name__ == "__main__":
+    app.secret_key = "super secret key"
+    app.run(debug=True, port=1234)
+>>>>>>> 48581ce84ffa5977ff410d7daedaf1bff9788d64

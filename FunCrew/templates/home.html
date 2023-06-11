@@ -36,13 +36,13 @@
     <div class="header">
         <div class="header-left">
             <button class="button"><a href="/home"> 🥂 </a></button>
-            <button class="button"><a href="/post/area">貼文</a></button>
+            <button class="button"><a href="/post/posts/newest">貼文</a></button>
             <button class="button">關於我們</button>
         </div>
         <div class="header-right">
             <button class="button"><a href="/activity/hostActivity/home">發起活動</a></button>
             <button class="button"><a href="/user/logout">登出</a></button>
-            <h4>{{ nickname }}</h4>
+            <h4><a href="/user/personalInfo">{{ nickname }}</a></h4>
         </div>
     </div>
 
@@ -72,6 +72,16 @@
             {% endfor %}
         </div>
         
+    </div>
+
+    <h3>最新貼文</h3>
+    <div class="post">
+        {% for post in posts %}
+        <div>
+            <span>By: {{ post['nickname'] }}</span>
+            <p>{{ post['postContent'] }}</p>
+        </div>
+        {% endfor %}
     </div>
 
 </body>
