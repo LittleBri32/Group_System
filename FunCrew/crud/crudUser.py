@@ -4,16 +4,103 @@ from flask_login import current_user  # Assumption: You're using Flask-Login for
 
 
 
-# 模組套件
-user_bp = Blueprint("user", __name__)
 
-# 此處為 user_bp 模組，所以路徑為 @user_bp.route("<>",)
-# 在 html 引用時，需設路徑為 "/user/sign_in" 樣子
+# 建立使用者
+def createUser(jsonData):
+    # 讀取使用者資訊
+    password = jsonData.get('password')
+    nickname = jsonData.get('nickname')
+    gender = jsonData.get('gender')
+    age = jsonData.get('age')
+    reputation_score = jsonData.get('reputationScore')
+    cellphone = jsonData.get('cellphone')
+    email = jsonData.get('email')
+    # 檢查必要欄位是否存在
+    if not (password and nickname and gender):
+        return {'error': 'Missing required fields'}, 400
+    # 檢查性別選項是否合法
+    gender_options = [option[0] for option in User.genderOption]
+    if gender not in gender_options:
+        return {'error': 'Invalid gender'}, 400
+    # 檢查使用者名稱是否已存在
+    existingUser = User.query.filter_by(nickname = nickname).first()
+    if existingUser:
+        return {'error': 'User with this nickname already exists'}, 400
+    # 如果 reputationScore 不存在，將其設置為預設值 100
+    if reputation_score is None or reputation_score == '':
+        reputation_score = 100
+    # 建立新使用者
+    user = User(
+        password = password,
+        nickname = nickname,
+        gender = gender,
+        age = age,
+        reputationScore = reputation_score,
+        cellphone = cellphone,
+        email = email
+    )
+
+    try:
+        db.session.add(user)
+        db.session.commit()
+        return {'message': 'User created successfully'}, 201
+    except Exception as e:
+        return {'error': str(e)}, 500
+
+
+# 使用者更新資料
+def updateUser(jsonData):
+    # 讀取使用者資訊
+    nickname = jsonData.get('nickname')
+    password = jsonData.get('password')
+    gender = jsonData.get('gender')
+    age = jsonData.get('age')
+    reputation_score = jsonData.get('reputationScore')
+    cellphone = jsonData.get('cellphone')
+    email = jsonData.get('email')
+    # 首先找到要更新的用戶
+    user = User.query.filter_by(nickname=nickname).first()
+    # 如果找不到用戶，則返回一個錯誤
+    if user is None:
+        return {'error': 'User not found'}, 404
+    # 更新用戶資訊
+    if password is not None:
+        user.password = password
+    if gender is not None:
+        user.gender = gender
+    if age is not None:
+        user.age = age
+    if reputation_score is not None:
+        user.reputationScore = reputation_score
+    if cellphone is not None:
+        user.cellphone = cellphone
+    if email is not None:
+        user.email = email
+    # 儲存更新
+    try:
+        # 建立與資料庫的連線
+        con = sql.connect("funCrew_db.db")
+        cur = con.cursor()
+
+        # 根據 userID 查詢使用者的暱稱
+        cur.execute("SELECT nickname FROM User WHERE userID=?", (userID,))
+        nickname = cur.fetchone()[0]
+
+        # 關閉資料庫連線
+        con.close()
+
+        return nickname
+    except Exception as e:
+        return {'error': str(e)}, 500
+
+
+
+# 使用者更新密碼
 
 
 # 登入處理
-@user_bp.route("/signin", methods=["GET", "POST"])
-def signin():
+@user_bp.route("/sign_in", methods=["GET", "POST"])
+def sign_in():
     # 建立與資料庫的連線
     con = sql.connect("funCrew_db.db")
     con.row_factory = sql.Row
@@ -46,85 +133,42 @@ def signin():
     return redirect("/home")
 
 
-# 登出處理
-@user_bp.route("/logout")
-def logout():
-    # 清除使用者的登入資訊
-    session.pop("nickname", None)
-    # 導向登入頁面
-    return render_template("login.html")
+# 刪除使用者
+def deleteUser(jsonData):
+    # 讀取使用者資訊
+    nickname = jsonData.get('nickname')
+    # 檢查必要欄位是否存在
+    if not nickname:
+        return {'error': 'Missing required field'}, 400
+    # 查詢使用者
+    user = User.query.filter_by(nickname=nickname).first()
+    if not user:
+        return {'error': 'User not found'}, 404
 
-
-# 註冊處理
-# 使用者在 register.html 提交表單的時候會執行
-@user_bp.route("/signupPost", methods=["POST"])
-def signupPost():
     try:
-        # 取得表單資料
-        email = request.form["email"]
-        password = request.form["password"]
-        check_password = request.form["check_password"]
-        cellphone = request.form["cellphone"]
-        nickname = request.form["nickname"]
-        gender = request.form["gender"]
-        birth = request.form["birth"]
-        if password != check_password:
-            msg = "二次確認密碼與設定的密碼不相同，請重新確認"
-            return render_template("register.html", msg=msg)
-        with sql.connect("funCrew_db.db") as con:
-            cur = con.cursor()
-            # 檢查信箱是否重複（排除目前正在註冊的使用者）
-            cur.execute("SELECT * FROM User WHERE email=? AND email<>?", (email, email))
-            existing_user = cur.fetchone()
-            if existing_user is not None:
-                msg = "該信箱已被註冊，請使用其他信箱"
-                return render_template("register.html", msg=msg)
-            # 執行註冊動作
-            cur.execute(
-                "INSERT INTO User (email, password, cellphone, nickname, gender, birth) VALUES (?, ?, ?, ?, ?, ?)",
-                (
-                    email,
-                    password,
-                    cellphone,
-                    nickname,
-                    gender,
-                    birth,
-                ),
-            )
-            con.commit()
-        # 點選註冊，成功後，轉到註冊成功的頁面
-        return redirect("/registration_success")
+        # 刪除使用者並提交更改
+        db.session.delete(user)
+        db.session.commit()
+        return {'message': 'User deleted successfully'}, 200
     except Exception as e:
-        con.rollback()
-        msg = f"註冊失敗！請確認你的資料。錯誤訊息：{str(e)}"
-        return render_template("register.html", msg = msg)
-    finally:
-        con.close()
-
-
-# 取得使用者暱稱的函式
-# @app.template_global()
-def get_nickname(userID):
-    try:
-        # 建立與資料庫的連線
-        con = sql.connect("funCrew_db.db")
-        cur = con.cursor()
-
-        # 根據 userID 查詢使用者的暱稱
-        cur.execute("SELECT nickname FROM User WHERE userID=?", (userID,))
-        nickname = cur.fetchone()[0]
-
-        # 關閉資料庫連線
-        con.close()
-
-        return nickname
-    except Exception as e:
-        print(f"Error occurred while retrieving nickname: {str(e)}")
-        return ""
-
-
+        return {'error': str(e)}, 500
 
 # 忘記密碼
-@user_bp.route("/forgetPassword", methods=["GET", "POST"])
-def forgetPassword():
+def forgetedPassword(jsonDict):
+    pass
+
+
+# 聯繫客服
+def helpMe(jsonDict):
+    pass
+
+
+
+# 個人資訊
+def myInfo(jsonDict):
+    pass
+
+
+# 他人資訊
+def hisInfo(jsonDict):
     pass

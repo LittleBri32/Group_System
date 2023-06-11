@@ -52,10 +52,12 @@ def submitPost():
         )
         con.commit()
 
-        # 關閉資料庫連線
-        con.close()
+# 顯示所有貼文
+def showThePost(jsonDict):
+    pass
 
-    # 重新導向到貼文區域
-    return redirect("/post/area")
+# 貼文
 
+# 刪除貼文
 
+# 留言
