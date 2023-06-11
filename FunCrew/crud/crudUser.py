@@ -1,5 +1,7 @@
-from flask import Blueprint, request, render_template, session, redirect
+from flask import Blueprint, request, render_template, session, redirect, current_app
 import sqlite3 as sql
+from flask_login import current_user  # Assumption: You're using Flask-Login for user management
+
 
 
 # 模組套件
@@ -10,8 +12,8 @@ user_bp = Blueprint("user", __name__)
 
 
 # 登入處理
-@user_bp.route("/sign_in", methods=["GET", "POST"])
-def sign_in():
+@user_bp.route("/signin", methods=["GET", "POST"])
+def signin():
     # 建立與資料庫的連線
     con = sql.connect("funCrew_db.db")
     con.row_factory = sql.Row
@@ -95,7 +97,7 @@ def signupPost():
     except Exception as e:
         con.rollback()
         msg = f"註冊失敗！請確認你的資料。錯誤訊息：{str(e)}"
-        return render_template("register.html", msg=msg)
+        return render_template("register.html", msg = msg)
     finally:
         con.close()
 
@@ -119,3 +121,10 @@ def get_nickname(userID):
     except Exception as e:
         print(f"Error occurred while retrieving nickname: {str(e)}")
         return ""
+
+
+
+# 忘記密碼
+@user_bp.route("/forgetPassword", methods=["GET", "POST"])
+def forgetPassword():
+    pass

@@ -1,17 +1,29 @@
-from flask import Flask, render_template, request, redirect, session
-import sqlite3 as sql
 from crud import crudActivity, crudPost, crudUser
+from flask import Flask, render_template, request, redirect, session, url_for, flash
+from flask_mail import Mail, Message
+import os
+import sqlite3 as sql
 from crud.crudUser import get_nickname
 
 
 app = Flask(__name__)
 app.secret_key = "nccucs"
 
+# Mail
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')      #改成自己信箱
+app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')    #改成自己信箱
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USE_SSL'] = False
+
+mail = Mail(app)
 
 # 把三個模組註冊到 app 中
 app.register_blueprint(crudUser.user_bp, url_prefix="/user")
 app.register_blueprint(crudActivity.activity_bp, url_prefix="/activity")
 app.register_blueprint(crudPost.post_bp, url_prefix="/post")
+
 
 
 # 跳轉到登入頁面
@@ -55,6 +67,46 @@ def home():
         return render_template("home.html", nickname=nickname, posts=posts)
     else:
         return render_template("login.html")
+    
+
+# 跳轉到忘記密碼頁面
+@app.route("/forget")
+def forget():
+    return render_template("forgetPassword.html")
+
+
+# mail 處理
+# @app.route('/forgetPassword', methods=['GET','POST'])
+# 忘記密碼表單送出
+@app.route('/forgetPassword', methods=['GET','POST'])
+def forget_password():
+    if request.method == 'POST':
+        phone = request.form.get('phone')
+        email = request.form.get('email')
+        # Check if phone and email exist in database
+        with sql.connect("funCrew_db.db") as con:
+            cur = con.cursor()
+            cur.execute("SELECT * FROM User WHERE cellphone=? AND email=?", (phone, email))
+            user = cur.fetchone()
+        if user:
+            msg = Message(
+                '[FunCrew] 密碼找回',
+                sender='111753135@g.nccu.edu.tw', #改成自己信箱
+                recipients=[user['email']],
+                body='Your password is: ' + user['password']
+            )
+            try:
+                mail.send(msg)
+            except Exception as e:
+                print(e)
+            flash('請至您的信箱查收信件', 'success')
+            return redirect(url_for('login'))
+        else:
+            session['error'] = 'No user with this phone number and email.'
+            return redirect(url_for('forget_password'))
+    else:
+        return render_template('forgetPassword.html')
+
 
 
 if __name__ == "__main__":

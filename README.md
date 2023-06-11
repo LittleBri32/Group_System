@@ -6,6 +6,7 @@ A platform for organizing group activities and events, including dining, drinkin
 
 
 ## Virtual Environment
+```python -m venv venv```
 1. For macOS/Linux
 
     ```source venv/bin/activate```
@@ -14,6 +15,10 @@ A platform for organizing group activities and events, including dining, drinkin
 
     ```venv\Scripts\activate```
 
+## Requirement
+```pip install -r requirement.txt```
+
+```pip install flask```
 
 ## Main
 ```flask run```

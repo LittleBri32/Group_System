@@ -25,7 +25,7 @@ def postArea():
 
     # 傳遞貼文內容和使用者暱稱的函式到 postArea.html 進行顯示
     return render_template(
-        "postArea.html", posts=posts, nickname=get_nickname(session["userID"])
+        "postArea.html", posts = posts, nickname = get_nickname(session["userID"])
     )
 
 
@@ -36,7 +36,7 @@ def submitPost():
 
     if content:
         # 建立與資料庫的連線
-        con = sql.connect("funCrew_db.db")
+        con = sql.connect("funCrew_db.db") 
         cur = con.cursor()
 
         # 取得當前使用者的userID
@@ -57,3 +57,5 @@ def submitPost():
 
     # 重新導向到貼文區域
     return redirect("/post/area")
+
+
