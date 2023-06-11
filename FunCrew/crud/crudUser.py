@@ -2,112 +2,18 @@ from flask import Blueprint, request, render_template, session, redirect,url_for
 import sqlite3 as sql
 import os
 from werkzeug.utils import secure_filename
+import uuid
 
-
-
-
-
-# 建立使用者
-def createUser(jsonData):
-    # 讀取使用者資訊
-    password = jsonData.get('password')
-    nickname = jsonData.get('nickname')
-    gender = jsonData.get('gender')
-    age = jsonData.get('age')
-    reputation_score = jsonData.get('reputationScore')
-    cellphone = jsonData.get('cellphone')
-    email = jsonData.get('email')
-    # 檢查必要欄位是否存在
-    if not (password and nickname and gender):
-        return {'error': 'Missing required fields'}, 400
-    # 檢查性別選項是否合法
-    gender_options = [option[0] for option in User.genderOption]
-    if gender not in gender_options:
-        return {'error': 'Invalid gender'}, 400
-    # 檢查使用者名稱是否已存在
-    existingUser = User.query.filter_by(nickname = nickname).first()
-    if existingUser:
-        return {'error': 'User with this nickname already exists'}, 400
-    # 如果 reputationScore 不存在，將其設置為預設值 100
-    if reputation_score is None or reputation_score == '':
-        reputation_score = 100
-    # 建立新使用者
-    user = User(
-        password = password,
-        nickname = nickname,
-        gender = gender,
-        age = age,
-        reputationScore = reputation_score,
-        cellphone = cellphone,
-        email = email
-    )
-
-    try:
-        db.session.add(user)
-        db.session.commit()
-        return {'message': 'User created successfully'}, 201
-    except Exception as e:
-        return {'error': str(e)}, 500
-
-
-# 使用者更新資料
-def updateUser(jsonData):
-    # 讀取使用者資訊
-    nickname = jsonData.get('nickname')
-    password = jsonData.get('password')
-    gender = jsonData.get('gender')
-    age = jsonData.get('age')
-    reputation_score = jsonData.get('reputationScore')
-    cellphone = jsonData.get('cellphone')
-    email = jsonData.get('email')
-    # 首先找到要更新的用戶
-    user = User.query.filter_by(nickname=nickname).first()
-    # 如果找不到用戶，則返回一個錯誤
-    if user is None:
-        return {'error': 'User not found'}, 404
-    # 更新用戶資訊
-    if password is not None:
-        user.password = password
-    if gender is not None:
-        user.gender = gender
-    if age is not None:
-        user.age = age
-    if reputation_score is not None:
-        user.reputationScore = reputation_score
-    if cellphone is not None:
-        user.cellphone = cellphone
-    if email is not None:
-        user.email = email
-    # 儲存更新
-    try:
-        # 建立與資料庫的連線
-        con = sql.connect("funCrew_db.db")
-        cur = con.cursor()
-
-        # 根據 userID 查詢使用者的暱稱
-        cur.execute("SELECT nickname FROM User WHERE userID=?", (userID,))
-        nickname = cur.fetchone()[0]
-
-        # 關閉資料庫連線
-        con.close()
-
-        return nickname
-    except Exception as e:
-        return {'error': str(e)}, 500
-
-import os
-from werkzeug.utils import secure_filename
 
 
 # 模組套件
 user_bp = Blueprint("user", __name__)
-
 # 此處為 user_bp 模組，所以路徑為 @user_bp.route("<>",)
-# 在 html 引用時，需設路徑為 "/user/sign_in" 樣子
+# 在 html 引用時，需設路徑為 "/user/signin" 樣子
 
 
 # 登入處理
-@user_bp.route("/sign_in", methods=["GET", "POST"])
+@user_bp.route("/signin", methods=["GET", "POST"])
 def sign_in():
     # 建立與資料庫的連線
     con = sql.connect("funCrew_db.db")
@@ -163,41 +69,144 @@ def logout():
     session.pop("nickname", None)
     # 導向登入頁面
     return render_template("login.html")
+    # try:
+    #     # 刪除使用者並提交更改
+    #     db.session.delete(user)
+    #     db.session.commit()
+    #     return {'message': 'User deleted successfully'}, 200
+    # except Exception as e:
+    #     return {'error': str(e)}, 500
 
 
+# 忘記密碼處理
+@user_bp.route("/forgotPasswordPost", methods=["POST"])
+def forgotPasswordPost():
+    con = None
     try:
-        # 刪除使用者並提交更改
-        db.session.delete(user)
-        db.session.commit()
-        return {'message': 'User deleted successfully'}, 200
+        con = sql.connect("funCrew_db.db")
+        con.row_factory = sql.Row
+        cur = con.cursor()
+
+        if request.method == "POST":
+            email = request.form["email"]
+            cur.execute("SELECT * FROM User WHERE email=?", (email,))
+            con.commit()
+
+            people = cur.fetchall()
+            if len(people) == 0:
+                msg = "沒有這個電子信箱的用戶，請重新輸入！"
+                return render_template("forgot_password.html", msg=msg)
+
+            return redirect("/forgot_password_success")
+
     except Exception as e:
-        return {'error': str(e)}, 500
+        msg = "發生錯誤：" + str(e)
+        return render_template("forgot_password.html", msg=msg)
+    finally:
+        if con:
+            con.close()
+    
 
-# 忘記密碼
-def forgetedPassword(jsonDict):
-    pass
+# 註冊處理
+# 使用者在 register.html 提交表單的時候會執行
+@user_bp.route("/signupPost", methods=["POST"])
+def signupPost():
+    con = None  # 初始化資料庫連線變數
+    try:
+        # 取得表單資料
+        email = request.form["email"]
+        password = request.form["password"]
+        check_password = request.form["check_password"]
+        cellphone = request.form["cellphone"]
+        nickname = request.form["nickname"]
+        gender = request.form["gender"]
+        birth = request.form["birth"]
+        avatar = request.files["image"]  # 取得上傳的檔案
+        if password != check_password:
+            msg = "二次確認密碼與設定的密碼不相同，請重新確認"
+            return render_template("register.html", msg=msg)
+        with sql.connect("funCrew_db.db") as con:
+            # 建立與資料庫的連線
+            cur = con.cursor()
+            # 檢查信箱是否重複（排除目前正在註冊的使用者）
+            cur.execute("SELECT * FROM User WHERE email=? AND email<>?", (email, email))
+            existing_user = cur.fetchone()
+            if existing_user is not None:
+                msg = "該信箱已被註冊，請使用其他信箱"
+                return render_template("register.html", msg=msg)
+            # 儲存上傳的大頭貼圖片
+            if avatar:
+                # 獲取原始檔案名稱和副檔名
+                filename = secure_filename(avatar.filename)
+                extension = filename.rsplit(".", 1)[1]
+                # 生成唯一的檔案名稱
+                unique_filename = str(uuid.uuid4()) + "." + extension
+                avatar.save(os.path.join("static/images/avatars/" + unique_filename))
+            else:
+                unique_filename = "default_avatar.png"  # 預設大頭貼檔名
+            # 執行註冊動作
+            cur.execute(
+                "INSERT INTO User (email, password, cellphone, nickname, gender, birth, image) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                (
+                    email,
+                    password,
+                    cellphone,
+                    nickname,
+                    gender,
+                    birth,
+                    unique_filename,  # 使用儲存的檔名
+                ),
+            )
+            con.commit()
+
+        # 點選註冊，成功後，轉到註冊成功的頁面
+        return redirect("/registration_success")
+    except Exception as e:
+        msg = "註冊過程發生錯誤：" + str(e)
+        if con:
+            con.rollback()  # 發生異常時回滾資料庫操作
+        return render_template("register.html", msg=msg)
+    finally:
+        if con:
+            con.close()  # 關閉資料庫連線
 
 
-# 聯繫客服
-def helpMe(jsonDict):
-    pass
+
+# 定義取得使用者大頭貼路徑的函式
+def get_avatar_path(userID):
+    try:
+        # 建立與資料庫的連線
+        con = sql.connect("funCrew_db.db")
+        cur = con.cursor()
+
+        # 根據 userID 查詢使用者的頭貼
+        cur.execute("SELECT image FROM User WHERE userID=?", (userID,))
+        filename = cur.fetchone()[0]
+
+        # 關閉資料庫連線
+        con.close()
+
+        return "static/images/avatars/" + filename
+    except Exception as e:
+        print(f"Error occurred while retrieving filename: {str(e)}")
+        return ""
 
 
 # 取得使用者暱稱的函式
-# @app.template_global()
 def get_nickname(userID):
     # 建立與資料庫的連線
     con = sql.connect("funCrew_db.db")
     cur = con.cursor()
 
-        # 根據 userID 查詢使用者的暱稱
-        cur.execute("SELECT nickname FROM User WHERE userID=?", (userID,))
-        nickname = cur.fetchone()[0]
+    # 根據 userID 查詢使用者的暱稱
+    cur.execute("SELECT nickname FROM User WHERE userID=?", (userID,))
+    nickname = cur.fetchone()[0]
 
-        # 關閉資料庫連線
-        con.close()
+    # 關閉資料庫連線
+    con.close()
 
     return nickname
+
 
 ##############侑萱#########################
 @user_bp.route('/personalInfo')
@@ -284,16 +293,6 @@ def info(userID):
     activitys = cur.fetchall()
 
     return render_template('Info.html', nickname=get_nickname(userID),score=score,gender=gender,cellphone=cellphone, posts=posts,activitys=activitys,user_image=user_image,user_id = str(userID))
-
-
-
-
-
-
-
-
-
-
 
 ##############侑萱#########################
 

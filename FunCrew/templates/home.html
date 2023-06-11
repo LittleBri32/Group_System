@@ -28,6 +28,25 @@
             margin-right: 16px;
             border: none;
         }
+
+        /*擺放大頭貼添加的*/
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-info h4 {
+            margin-right: 8px;
+        }
+
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        /*擺放大頭貼添加的*/
+
     </style>
 </head>
 
@@ -42,7 +61,11 @@
         <div class="header-right">
             <button class="button"><a href="/activity/hostActivity/home">發起活動</a></button>
             <button class="button"><a href="/user/logout">登出</a></button>
-            <h4><a href="/user/personalInfo">{{ nickname }}</a></h4>
+            <!-- <h4><a href="/user/personalInfo">{{ nickname }}</a></h4> -->
+            <div class="user-info">
+                <h4>{{ nickname }}</h4>
+                <img src="{{ avatar }}" alt="大頭貼">
+            </div>
         </div>
     </div>
 
@@ -74,17 +97,10 @@
         
     </div>
 
-    <h3>最新貼文</h3>
-    <div class="post">
-        {% for post in posts %}
-        <div>
-            <span>By: {{ post['nickname'] }}</span>
-            <p>{{ post['postContent'] }}</p>
-        </div>
-        {% endfor %}
-    </div>
 
 </body>
 
 
 </html>
+
+

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>新增貼文</title>
+    <style>
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #f2f2f2;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .button {
+            margin-right: 16px;
+            border: none;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>確認刪除留言？</h1>
+    <form action="/post/posts/delete_comment/{{ commentID }}" method="POST">
+        <input type="hidden" name="previous_url" value={{previous_url}}>
+        <input type="submit" value="確認">
+    </form>
+</body>

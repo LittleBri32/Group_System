@@ -9,11 +9,21 @@
         }
     </style>
 </head>
+<script>
+    function previewImage(event) {
+        var reader = new FileReader();
+        reader.onload = function () {
+            var preview = document.getElementById('imagePreview');
+            preview.src = reader.result;
+        }
+        reader.readAsDataURL(event.target.files[0]);
+    }
+</script>
 
 <body>
     <h1>新帳號設定 (會員註冊)</h1>
     <div class="center">
-        <form action="/user/signupPost" method="POST">
+        <form action="/user/signupPost" method="POST" enctype="multipart/form-data">
             <label for="email">Email（作為你的帳號）：</label>
             <input type="email" id="email" name="email" required><br>
 
@@ -37,6 +47,11 @@
 
             <label for="birth">生日：</label>
             <input type="date" id="birth" name="birth" required><br>
+
+            <label for="image">大頭貼：</label>
+            <input type="file" id="image" name="image" onchange="previewImage(event)"><br>
+            <img id="imagePreview" src="#" alt="預覽圖片" style="max-width: 200px; max-height: 200px;"><br>
+
 
             <!-- 檢查是否有錯誤訊息 -->
             {% if msg %}

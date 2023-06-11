@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS "Post" (
 	"postUserID"	INTEGER,
 	"postTime"	TEXT,
 	"postContent"	TEXT,
-	"Post" INT,
+	"postView" INT,
 	FOREIGN KEY("postUserID") REFERENCES "User"("userID"),
 	PRIMARY KEY("postID" AUTOINCREMENT)
 );
