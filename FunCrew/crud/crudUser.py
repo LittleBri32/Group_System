@@ -1,60 +1,27 @@
-from flask import Blueprint, request, render_template, session, redirect
+from flask import (
+    Blueprint,
+    request,
+    render_template,
+    session,
+    redirect,
+    url_for,
+    flash,
+    current_app,
+)
 import sqlite3 as sql
 import os
 from werkzeug.utils import secure_filename
 import uuid
 
 
-# @app.template_global()
-# 定義取得使用者大頭貼路徑的函式
-def get_avatar_path(userID):
-    try:
-        # 建立與資料庫的連線
-        con = sql.connect("funCrew_db.db")
-        cur = con.cursor()
-
-        # 根據 userID 查詢使用者的頭貼
-        cur.execute("SELECT image FROM User WHERE userID=?", (userID,))
-        filename = cur.fetchone()[0]
-
-        # 關閉資料庫連線
-        con.close()
-
-        return "static/images/avatars/" + filename
-    except Exception as e:
-        print(f"Error occurred while retrieving filename: {str(e)}")
-        return ""
-
-
-# 取得使用者暱稱的函式
-def get_nickname(userID):
-    try:
-        # 建立與資料庫的連線
-        con = sql.connect("funCrew_db.db")
-        cur = con.cursor()
-
-        # 根據 userID 查詢使用者的暱稱
-        cur.execute("SELECT nickname FROM User WHERE userID=?", (userID,))
-        nickname = cur.fetchone()[0]
-
-        # 關閉資料庫連線
-        con.close()
-
-        return nickname
-    except Exception as e:
-        print(f"Error occurred while retrieving nickname: {str(e)}")
-        return ""
-
-
 # 模組套件
 user_bp = Blueprint("user", __name__)
-
 # 此處為 user_bp 模組，所以路徑為 @user_bp.route("<>",)
-# 在 html 引用時，需設路徑為 "/user/sign_in" 樣子
+# 在 html 引用時，需設路徑為 "/user/signin" 樣子
 
 
 # 登入處理
-@user_bp.route("/sign_in", methods=["GET", "POST"])
+@user_bp.route("/signin", methods=["GET", "POST"])
 def sign_in():
     # 建立與資料庫的連線
     con = sql.connect("funCrew_db.db")
@@ -84,6 +51,17 @@ def sign_in():
         )
         userID = cur.fetchone()[0]
         session["userID"] = userID
+        ############################################# Gary
+        try:
+            cur.execute("DROP TABLE temp{}ViewCount".format(userID))
+        except sql.OperationalError:
+            pass
+        cur.execute(
+            "CREATE TABLE temp{}ViewCount (postID INTEGER PRIMARY KEY)".format(userID)
+        )
+        con.commit()
+        con.close()
+        #################################################################################
     # 點選登入btn後會切回home首頁
     return redirect("/home")
 
@@ -91,10 +69,23 @@ def sign_in():
 # 登出處理
 @user_bp.route("/logout")
 def logout():
+    ##################################################################### Gary
+    con = sql.connect("funCrew_db.db")
+    con.row_factory = sql.Row
+    cur = con.cursor()
+    cur.execute("DROP TABLE temp{}ViewCount".format(session["userID"]))
+    ############################################################
     # 清除使用者的登入資訊
     session.pop("nickname", None)
     # 導向登入頁面
     return render_template("login.html")
+    # try:
+    #     # 刪除使用者並提交更改
+    #     db.session.delete(user)
+    #     db.session.commit()
+    #     return {'message': 'User deleted successfully'}, 200
+    # except Exception as e:
+    #     return {'error': str(e)}, 500
 
 
 # 忘記密碼處理
@@ -140,38 +131,29 @@ def signupPost():
         nickname = request.form["nickname"]
         gender = request.form["gender"]
         birth = request.form["birth"]
-
         avatar = request.files["image"]  # 取得上傳的檔案
-
         if password != check_password:
             msg = "二次確認密碼與設定的密碼不相同，請重新確認"
             return render_template("register.html", msg=msg)
-
         with sql.connect("funCrew_db.db") as con:
             # 建立與資料庫的連線
             cur = con.cursor()
-
             # 檢查信箱是否重複（排除目前正在註冊的使用者）
             cur.execute("SELECT * FROM User WHERE email=? AND email<>?", (email, email))
             existing_user = cur.fetchone()
             if existing_user is not None:
                 msg = "該信箱已被註冊，請使用其他信箱"
                 return render_template("register.html", msg=msg)
-
             # 儲存上傳的大頭貼圖片
             if avatar:
                 # 獲取原始檔案名稱和副檔名
                 filename = secure_filename(avatar.filename)
                 extension = filename.rsplit(".", 1)[1]
-
                 # 生成唯一的檔案名稱
                 unique_filename = str(uuid.uuid4()) + "." + extension
-
                 avatar.save(os.path.join("static/images/avatars/" + unique_filename))
-
             else:
                 unique_filename = "default_avatar.png"  # 預設大頭貼檔名
-
             # 執行註冊動作
             cur.execute(
                 "INSERT INTO User (email, password, cellphone, nickname, gender, birth, image) VALUES (?, ?, ?, ?, ?, ?, ?)",
@@ -197,3 +179,160 @@ def signupPost():
     finally:
         if con:
             con.close()  # 關閉資料庫連線
+
+
+# 定義取得使用者大頭貼路徑的函式
+def get_avatar_path(userID):
+    try:
+        # 建立與資料庫的連線
+        con = sql.connect("funCrew_db.db")
+        cur = con.cursor()
+
+        # 根據 userID 查詢使用者的頭貼
+        cur.execute("SELECT image FROM User WHERE userID=?", (userID,))
+        filename = cur.fetchone()[0]
+
+        # 關閉資料庫連線
+        con.close()
+
+        return "static/images/avatars/" + filename
+    except Exception as e:
+        print(f"Error occurred while retrieving filename: {str(e)}")
+        return ""
+
+
+# 取得使用者暱稱的函式
+def get_nickname(userID):
+    # 建立與資料庫的連線
+    con = sql.connect("funCrew_db.db")
+    cur = con.cursor()
+
+    # 根據 userID 查詢使用者的暱稱
+    cur.execute("SELECT nickname FROM User WHERE userID=?", (userID,))
+    nickname = cur.fetchone()[0]
+
+    # 關閉資料庫連線
+    con.close()
+
+    return nickname
+
+
+##############侑萱#########################
+@user_bp.route("/personalInfo")
+def personal_info():
+    userID = session["userID"]
+    con = sql.connect("funCrew_db.db")
+    cur = con.cursor()
+
+    cur.execute("SELECT image FROM User WHERE userID=?", (userID,))
+    user_image = cur.fetchone()
+
+    cur.execute("SELECT * FROM User WHERE userID=?", (userID,))
+    person = cur.fetchall()[0]
+
+    cur.execute(
+        "SELECT Avg(Participant.score) FROM Participant, Activity WHERE organizerUserID=? AND participantActivityID=activityID",
+        (userID,),
+    )
+    score = cur.fetchone()[0]
+
+    cur.execute("SELECT postID, postTitle FROM Post WHERE postUserID=?", (userID,))
+    posts = cur.fetchall()
+
+    cur.execute("SELECT title FROM Activity WHERE organizerUserID=?", (userID,))
+    activitys = cur.fetchall()
+
+    return render_template(
+        "personalInfo.html",
+        nickname=get_nickname(userID),
+        user_image=user_image,
+        user_id=str(userID),
+        person=person,
+        score=score,
+        posts=posts,
+        activitys=activitys,
+    )
+
+
+@user_bp.route("/personalInfo", methods=["POST"])
+def upload_photo():
+    userID = session["userID"]
+    file = request.files["photo"]
+    file_path = os.path.join(current_app.config["UPLOAD_FOLDER"], str(userID) + ".png")
+    file.save(file_path)
+    # 將圖片路徑保存到資料庫
+    userID = session["userID"]
+    con = sql.connect("funCrew_db.db")
+    cur = con.cursor()
+    cur.execute("UPDATE User SET image = ? WHERE userID = ?", (file_path, userID))
+    con.commit()
+    con.close()
+    return redirect(url_for("user.personal_info"))
+
+
+@user_bp.route("/update_personalInfo", methods=["GET", "POST"])
+def update_personalInfo():
+    userID = session["userID"]
+    con = sql.connect("funCrew_db.db")
+    cur = con.cursor()
+    cur.execute("SELECT * FROM User WHERE userID=?", (userID,))
+    person = cur.fetchall()[0]
+
+    if "save" in request.form:
+        nickname = request.form.get("nickname")
+        birth = request.form.get("birth")
+        gender = request.form.get("gender")
+        cellphone = request.form.get("cellphone")
+
+        con = sql.connect("funCrew_db.db")
+        cur = con.cursor()
+        cur.execute(
+            "UPDATE User SET nickname = ?, birth = ?, gender = ?, cellphone = ? WHERE userID = ?",
+            (nickname, birth, gender, cellphone, userID),
+        )
+        con.commit()
+        con.close()
+        return redirect(url_for("user.personal_info"))
+    return render_template("update_personalInfo.html", person=person)
+
+
+@user_bp.route("/info/<int:userID>")
+def info(userID):
+    con = sql.connect("funCrew_db.db")
+    cur = con.cursor()
+
+    cur.execute("SELECT cellphone,gender FROM User WHERE userID=?", (userID,))
+    cellphone, gender = cur.fetchone()
+    #################
+    cur.execute(
+        "SELECT Avg(Participant.score) FROM Participant, Activity WHERE organizerUserID=? AND participantActivityID=activityID",
+        (userID,),
+    )
+    score = cur.fetchone()[0]
+    ################
+    cur.execute("SELECT image FROM User WHERE userID=?", (userID,))
+    user_image = cur.fetchone()
+
+    cur.execute(
+        "SELECT postID, postContent FROM Post WHERE postUserID=? ORDER BY postTime DESC LIMIT 3",
+        (userID,),
+    )
+    posts = cur.fetchall()
+
+    cur.execute("SELECT title FROM Activity WHERE organizerUserID=?", (userID,))
+    activitys = cur.fetchall()
+
+    return render_template(
+        "Info.html",
+        nickname=get_nickname(userID),
+        score=score,
+        gender=gender,
+        cellphone=cellphone,
+        posts=posts,
+        activitys=activitys,
+        user_image=user_image,
+        user_id=str(userID),
+    )
+
+
+##############侑萱#########################

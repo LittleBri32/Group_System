@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS "User" (
 	PRIMARY KEY("userID" AUTOINCREMENT)
 );
 CREATE TABLE IF NOT EXISTS "Activity" (
-	"activityID"	INTEGER,
+	"activityID" VARCHAR(36),
 	"title"	VARCHAR(10),
 	"time"	TEXT,
 	"area"	TEXT,
@@ -26,12 +26,13 @@ CREATE TABLE IF NOT EXISTS "Activity" (
 	"status"	CHAR(1),
 	"organizerUserID"	INTEGER,
 	"Intro"	VARCHAR(50),
+	"createTime"	TEXT,
 	FOREIGN KEY("organizerUserID") REFERENCES "User"("userID"),
-	PRIMARY KEY("activityID" AUTOINCREMENT)
+	PRIMARY KEY("activityID" )
 );
 CREATE TABLE IF NOT EXISTS "Participant" (
 	"participantUserID"	INTEGER,
-	"participantActivityID"	INTEGER,
+	"participantActivityID"	VARCHAR(36),
 	"score"	INTEGER,
 	FOREIGN KEY("participantUserID") REFERENCES "User"("userID"),
 	FOREIGN KEY("participantActivityID") REFERENCES "Activity"("activityID"),
@@ -40,7 +41,7 @@ CREATE TABLE IF NOT EXISTS "Participant" (
 CREATE TABLE IF NOT EXISTS "Discussion" (
 	"discussionID"	INTEGER,
 	"discussionUserID"	INTEGER,
-	"discussionActivityID"	INTEGER,
+	"discussionActivityID"	VARCHAR(36),
 	"discussionTime"	TEXT,
 	"discussionContent"	TEXT,
 	FOREIGN KEY("discussionUserID") REFERENCES "User"("userID"),
@@ -52,6 +53,7 @@ CREATE TABLE IF NOT EXISTS "Post" (
 	"postUserID"	INTEGER,
 	"postTime"	TEXT,
 	"postContent"	TEXT,
+	"postView" INT,
 	FOREIGN KEY("postUserID") REFERENCES "User"("userID"),
 	PRIMARY KEY("postID" AUTOINCREMENT)
 );
@@ -66,20 +68,19 @@ CREATE TABLE IF NOT EXISTS "Comment" (
 	PRIMARY KEY("commentID" AUTOINCREMENT)
 );
 
-INSERT INTO "Post" VALUES (2,5,'2023-05-22 15:52:53','我好想睡覺...');
-INSERT INTO "Post" VALUES (3,4,'2023-05-22 15:53:20','我是一隻可愛小鴨鴨');
-INSERT INTO "Post" VALUES (4,5,'2023-05-22 15:55:05','肚子22');
-INSERT INTO "Post" VALUES (5,5,'2023-05-22 16:16:54','笨笨! 你這個大笨笨!');
-INSERT INTO "Post" VALUES (6,6,'2023-05-22 19:12:52','揪人打羽球喔喔喔喔');
-INSERT INTO "Post" VALUES (7,7,'2023-05-22 19:26:52','子傑打得贏我嗎? 哈???');
-INSERT INTO "Post" VALUES (8,6,'2023-05-22 20:38:00','哈囉大家好');
-INSERT INTO "User" VALUES (4,'77','呱呱','F','2023-05-10',NULL,'09','hello22255871@gmail.com');
-INSERT INTO "User" VALUES (5,'12345678','Richard','M','2010-06-03',NULL,'0987887887','111753157@g.nccu.edu.tw');
-INSERT INTO "User" VALUES (6,'12345678','子傑帥帥','M','1990-11-14',NULL,'0988788255','ttsai@g.nccu.edu.tw');
-INSERT INTO "User" VALUES (7,'12345678','Daniel','F','1992-06-09',NULL,'0977777777','111753230@g.nccu.edu');
-INSERT INTO "User" VALUES (8,'12345678','Rachel','F','2023-05-01',NULL,'0977777666','111753214@g.nccu.edu.tw');
+INSERT INTO "Post" VALUES (2,5,'2023-05-22 15:52:53','我好想睡覺...',0);
+INSERT INTO "Post" VALUES (3,4,'2023-05-22 15:53:20','我是一隻可愛小鴨鴨',10);
+INSERT INTO "Post" VALUES (4,5,'2023-05-22 15:55:05','肚子22',10);
+INSERT INTO "Post" VALUES (5,5,'2023-05-22 16:16:54','笨笨! 你這個大笨笨!',12);
+INSERT INTO "Post" VALUES (6,6,'2023-05-22 19:12:52','揪人打羽球喔喔喔喔',75);
+INSERT INTO "Post" VALUES (7,7,'2023-05-22 19:26:52','子傑打得贏我嗎? 哈???',50);
+INSERT INTO "Post" VALUES (8,6,'2023-05-22 20:38:00','哈囉大家好',50);
+INSERT INTO "User" VALUES (4, '77', '呱呱', 'F', '2023-05-10', NULL, '09', 'hello22255871@gmail.com', '');
+INSERT INTO "User" VALUES (5, '12345678', 'Richard', 'M', '2010-06-03', NULL, '0987887887', '111753157@g.nccu.edu.tw', '');
+INSERT INTO "User" VALUES (6, '12345678', '子傑帥帥', 'M', '1990-11-14', NULL, '0988788255', 'ttsai@g.nccu.edu.tw', '');
+INSERT INTO "User" VALUES (7, '12345678', 'Daniel', 'F', '1992-06-09', NULL, '0977777777', '111753230@g.nccu.edu', '');
+INSERT INTO "User" VALUES (8, '12345678', 'Rachel', 'F', '2023-05-01', NULL, '0977777666', '111753214@g.nccu.edu.tw', '');
 COMMIT;
-
 
 -- drop  TABLE "Activity";
 -- drop  TABLE "Participant";

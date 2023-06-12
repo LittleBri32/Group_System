@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>首頁</title>
+    <style>
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #f2f2f2;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .button {
+            margin-right: 16px;
+            border: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div class="header-left">
+            <button class="button"><a href="/home"> 🥂 </a></button>
+            <button class="button"><a href="/post/posts/newest">貼文</a></button>
+            <button class="button">關於我們</button>
+        </div>
+        <div class="header-right">
+            <button class="button">主辦活動</button>
+            <button class="button"><a href="/user/logout">登出</a></button>
+            <button class="button"></button>
+            <h4><a href="/user/personalInfo">{{ nickname }}</a></h4></button>
+            <img src="{{ avatar }}" alt="大頭貼">
+        </div>
+    </div>
+
+    <head>
+        <title>個人資料</title>
+    </head>
+
+    <body>
+        <h1>個人資料</h1>
+        <div class="profile-picture">
+            {% for img_path in user_image %}
+            <img src="{{url_for('static',filename=user_id+'.png') }}" alt="個人照片" />
+            {% endfor %}
+        </div>
+        <form method="POST" action="{{ url_for('user.upload_photo') }}" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="photo">上傳照片</label>
+                <input type="file" class="form-control-file" id="photo" name="photo" required>
+            </div>
+            <input type="submit" value="上傳" class="btn btn-primary">
+        </form>
+        <h2>暱稱: {{ nickname }}</h2>
+        <p>郵件: {{ person[7] }}</p>
+        <p>生日: {{ person[4] }}</p>
+        <p>性別: {{ person[3] }}</p>
+        <p>電話: {{ person[6] }}</p>
+        <p>評分: {{ score }}</p>
+
+        <!-- 修改個人資料表單 -->
+        <button><a href="/user/update_personalInfo">修改個人資料</a></button>
+        <!-- personalInfo.html -->
+
+
+
+
+
+
+        <h2>發布過的貼文</h2>
+        <ul>
+            {% for post in posts %}
+            <li><a href="/post/posts/{{ post[0] }}">{{ post[1] }}</a></li>
+            {% endfor %}
+        </ul>
+        <h2>發起的活動</h2>
+        <ul>
+            {% for activity in activitys %}
+            <li>{{ activity[0] }}</li>
+            {% endfor %}
+        </ul>
+    </body>
+
+</body>
+
+</html>

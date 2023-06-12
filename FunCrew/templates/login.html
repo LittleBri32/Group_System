@@ -14,9 +14,9 @@
     <h1>FunCrew</h1>
     <div class="center">
         <h1>會員登入</h1>
-        <form action="/user/sign_in" method="POST">
-            Email帳號 <input type="text" name="email" /><br />
-            密碼 <input type="text" name="password" /><br />
+        <form action="/user/signin" method="POST">
+            Email帳號 <input type="text" name = "email" /><br />
+            密碼 <input type="text" name = "password" /><br />
             {% if msg %}
             <p>{{ msg }}</p>
             {% endif %}
@@ -24,6 +24,8 @@
         </form>
         <button><a href="/signup">註冊</a></button>
         <button><a href="/forgotPassword">忘記密碼</a></button>
+
+
     </div>
 </body>
 
