@@ -12,7 +12,7 @@ post_bp = Blueprint("post", __name__)
 def posts_method(sortmethod):
     userID = session["userID"]
     searching_value = ""
-    if sortmethod == "newest":
+    if sortmethod == "newest" or sortmethod == "None":
         con = sql.connect("funCrew_db.db")
         con.row_factory = sql.Row
         cur = con.cursor()
@@ -22,6 +22,7 @@ def posts_method(sortmethod):
         )
         posts = cur.fetchall()
         # 關閉資料庫連線
+        con.commit()
         con.close()
     elif sortmethod == "mostView":
         con = sql.connect("funCrew_db.db")
@@ -33,6 +34,7 @@ def posts_method(sortmethod):
         )
         posts = cur.fetchall()
         # 關閉資料庫連線
+        con.commit()
         con.close()
     elif sortmethod == "hotest":
         con = sql.connect("funCrew_db.db")
@@ -44,6 +46,7 @@ def posts_method(sortmethod):
         )
         posts = cur.fetchall()
         # 關閉資料庫連線
+        con.commit()
         con.close()
     elif sortmethod == "searching":
         if request.form.get("searching_value"):
@@ -62,6 +65,7 @@ def posts_method(sortmethod):
             ),
         )
         posts = cur.fetchall()
+        con.commit()
         con.close()
     elif sortmethod == "my_posts":
         con = sql.connect("funCrew_db.db")
@@ -73,6 +77,7 @@ def posts_method(sortmethod):
         )
         posts = cur.fetchall()
         # 關閉資料庫連線
+        con.commit()
         con.close()
     return render_template(
         "posts.html",
@@ -108,11 +113,11 @@ def create_post():
             "INSERT INTO Post (postUserID, postTitle, postContent, postTime, postView) VALUES (?, ?, ?, ?, 0)",
             (userID, title, content, postTime),
         )
-        con.commit()
 
         # 關閉資料庫連線
+        con.commit()
         con.close()
-        return redirect(previous_url)
+        return redirect("/post/posts/newest")
     #
     return render_template("create_post.html", previous_url=request.referrer)
 
@@ -144,8 +149,12 @@ def post_detail(postID):
     # View的記錄與防止刷view
     cur.execute("SELECT postView FROM Post WHERE postID = ?", (postID,))
     view = cur.fetchone()[0]
+    con.commit()
+    con.close()
     # try: 可以插入記錄到view count，代表這次登入沒看過
     try:
+        con = sql.connect("funCrew_db.db")
+        cur = con.cursor()
         cur.execute(
             "INSERT INTO temp{}ViewCount (postID) VALUES (?)".format(userID), (postID,)
         )
@@ -160,7 +169,8 @@ def post_detail(postID):
         con.commit()
         con.close()
     # except: 不可以插入記錄到view count，代表這次登入看過
-    except sql.IntegrityError:
+    except:
+        con.close()
         pass
 
     # 抓留言
@@ -168,20 +178,27 @@ def post_detail(postID):
         content = request.form.get("content")
 
         # 建立與資料庫的連線
-        con = sql.connect("funCrew_db.db")
-        cur = con.cursor()
+        # con = sql.connect("funCrew_db.db")
+        # cur = con.cursor()
 
         # 取得當前時間
         postTime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         # 將貼文存入資料庫
+        con = sql.connect("funCrew_db.db")
+        cur = con.cursor()
         cur.execute(
             "INSERT INTO Comment (commentPostID, commentUserID, commentContent, commentTime) VALUES (?, ?, ?, ?)",
-            (postID, userID, content, postTime),
+            (
+                postID,
+                userID,
+                content,
+                postTime,
+            ),
         )
-        con.commit()
 
         # 關閉資料庫連線
+        con.commit()
         con.close()
         return redirect(request.referrer)
 
@@ -217,6 +234,7 @@ def my_posts():
     my_posts = cur.fetchall()
 
     # 關閉資料庫連線
+    con.commit()
     con.close()
 
     # 傳遞貼文內容和使用者暱稱的函式到 posts.html 進行顯示
@@ -241,6 +259,7 @@ def update_post(postID):
     post = cur.fetchone()
 
     # 關閉資料庫連線
+    con.commit()
     con.close()
 
     # 抓更改
@@ -258,9 +277,9 @@ def update_post(postID):
             "UPDATE Post SET postTitle = ?, postContent = ? WHERE postID = ?;",
             (title, content, postID),
         )
-        con.commit()
 
         # 關閉資料庫連線
+        con.commit()
         con.close()
         return redirect(previous_url)
 
@@ -279,9 +298,9 @@ def delete_post(postID):
 
         cur.execute("PRAGMA foreign_keys = ON;")
         cur.execute("DELETE FROM Post WHERE postID = ?;", (postID,))
-        con.commit()
 
         # 關閉資料庫連線
+        con.commit()
         con.close()
         return redirect(previous_url)
 
@@ -308,6 +327,7 @@ def my_domments():
     my_comments = cur.fetchall()
 
     # 關閉資料庫連線
+    con.commit()
     con.close()
 
     # 傳遞貼文內容和使用者暱稱的函式到 posts.html 進行顯示
@@ -332,6 +352,7 @@ def update_comment(commentID):
     comment = cur.fetchone()
 
     # 關閉資料庫連線
+    con.commit()
     con.close()
 
     # 抓更改
@@ -348,9 +369,9 @@ def update_comment(commentID):
             "UPDATE Comment SET commentContent = ? WHERE commentID = ?;",
             (content, commentID),
         )
-        con.commit()
 
         # 關閉資料庫連線
+        con.commit()
         con.close()
         return redirect(previous_url)
 
@@ -372,9 +393,9 @@ def delete_comment(commentID):
 
         # 更改資料庫
         cur.execute("DELETE FROM Comment WHERE commentID = ?;", (commentID,))
-        con.commit()
 
         # 關閉資料庫連線
+        con.commit()
         con.close()
         return redirect(previous_url)
 

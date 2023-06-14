@@ -72,8 +72,8 @@
     <div class="post">
         {% for post in posts %}
         <div>
-            <h2>{{ post['postContent'] }}</h2>
-            <p>By: {{ post['nickname'] }}</p>
+            <a href="/post/posts/{{post['postID']}}">{{ post['postTitle'] }}</a>
+            <a href="/user/info/{{post['postUserID']}}">By: {{ post['nickname'] }}</a>
         </div>
         {% endfor %}
     </div>

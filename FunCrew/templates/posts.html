@@ -171,7 +171,7 @@
             <br><span>觀看次數：{{ post['postView'] }}</span>
         </div>
         <br>
-        {% if post['postUserID'] == userID %}
+        {% if (post['postUserID'] == userID) and (sortmethod != "searching") %}
         <div>
             <button><a href="/post/posts/update_post/{{post['postID']}}"
                     style="text-decoration:none; color:black">修改帖文</a></button>

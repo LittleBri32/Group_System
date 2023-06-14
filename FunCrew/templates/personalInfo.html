@@ -26,8 +26,38 @@
             margin-right: 16px;
             border: none;
         }
+
+        /*擺放大頭貼添加的*/
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-info h4 {
+            margin-right: 8px;
+        }
+
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /*擺放大頭貼添加的*/
     </style>
 </head>
+
+<script>
+    function previewImage(event) {
+        var reader = new FileReader();
+        reader.onload = function () {
+            var preview = document.getElementById('imagePreview');
+            preview.src = reader.result;
+        }
+        reader.readAsDataURL(event.target.files[0]);
+    }
+</script>
 
 <body>
     <div class="header">
@@ -39,9 +69,10 @@
         <div class="header-right">
             <button class="button">主辦活動</button>
             <button class="button"><a href="/user/logout">登出</a></button>
-            <button class="button"></button>
-            <h4><a href="/user/personalInfo">{{ nickname }}</a></h4></button>
-            <img src="{{ avatar }}" alt="大頭貼">
+            <div class="user-info">
+                <h4><a href="/user/personalInfo">{{ nickname }}</a></h4></button>
+                <img src="{{ url_for('static', filename='images/avatars/' + user_image[0]) }}" alt="大頭貼">
+            </div>
         </div>
     </div>
 
@@ -52,14 +83,17 @@
     <body>
         <h1>個人資料</h1>
         <div class="profile-picture">
-            {% for img_path in user_image %}
-            <img src="{{url_for('static',filename=user_id+'.png') }}" alt="個人照片" />
-            {% endfor %}
+            <img src="{{ url_for('static', filename='images/avatars/' + user_image[0]) }}" alt="大頭貼">
         </div>
         <form method="POST" action="{{ url_for('user.upload_photo') }}" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="photo">上傳照片</label>
-                <input type="file" class="form-control-file" id="photo" name="photo" required>
+
+                <input type="file" id="image" name="image" onchange="previewImage(event)"><br>
+                <img id="imagePreview" src="#" alt="你要修改的頭貼尚未上傳" style="max-width: 200px; max-height: 200px;"><br>
+
+
+                <!-- <input type="file" class="form-control-file" id="photo" name="photo" required> -->
             </div>
             <input type="submit" value="上傳" class="btn btn-primary">
         </form>

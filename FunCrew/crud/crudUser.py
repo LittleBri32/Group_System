@@ -53,12 +53,13 @@ def sign_in():
         session["userID"] = userID
         ############################################# Gary
         try:
-            cur.execute("DROP TABLE temp{}ViewCount".format(userID))
-        except sql.OperationalError:
+            cur.execute(
+                "CREATE TABLE temp{}ViewCount (postID INTEGER PRIMARY KEY)".format(
+                    userID
+                )
+            )
+        except:
             pass
-        cur.execute(
-            "CREATE TABLE temp{}ViewCount (postID INTEGER PRIMARY KEY)".format(userID)
-        )
         con.commit()
         con.close()
         #################################################################################
@@ -73,7 +74,7 @@ def logout():
     con = sql.connect("funCrew_db.db")
     con.row_factory = sql.Row
     cur = con.cursor()
-    cur.execute("DROP TABLE temp{}ViewCount".format(session["userID"]))
+    # cur.execute("DROP TABLE temp{}ViewCount".format(session["userID"]))
     ############################################################
     # 清除使用者的登入資訊
     session.pop("nickname", None)
@@ -255,16 +256,22 @@ def personal_info():
 
 
 @user_bp.route("/personalInfo", methods=["POST"])
+# 使用者上傳大頭貼
 def upload_photo():
     userID = session["userID"]
     file = request.files["photo"]
-    file_path = os.path.join(current_app.config["UPLOAD_FOLDER"], str(userID) + ".png")
+    # 獲取原始檔案名稱和副檔名
+    filename = secure_filename(file.filename)
+    extension = filename.rsplit(".", 1)[1]
+    unique_filename = str(uuid.uuid4()) + "." + extension
+    file_path = os.path.join("static/images/avatars/" + unique_filename)
     file.save(file_path)
+
     # 將圖片路徑保存到資料庫
     userID = session["userID"]
     con = sql.connect("funCrew_db.db")
     cur = con.cursor()
-    cur.execute("UPDATE User SET image = ? WHERE userID = ?", (file_path, userID))
+    cur.execute("UPDATE User SET image = ? WHERE userID = ?", (unique_filename, userID))
     con.commit()
     con.close()
     return redirect(url_for("user.personal_info"))
@@ -298,8 +305,12 @@ def update_personalInfo():
 
 @user_bp.route("/info/<int:userID>")
 def info(userID):
+    origin_user = session["userID"]
     con = sql.connect("funCrew_db.db")
     cur = con.cursor()
+
+    cur.execute("SELECT nickname FROM User WHERE userID=?", (origin_user,))
+    origin_username = cur.fetchone()[0]
 
     cur.execute("SELECT cellphone,gender FROM User WHERE userID=?", (userID,))
     cellphone, gender = cur.fetchone()
@@ -312,6 +323,9 @@ def info(userID):
     ################
     cur.execute("SELECT image FROM User WHERE userID=?", (userID,))
     user_image = cur.fetchone()
+
+    cur.execute("SELECT image FROM User WHERE userID=?", (origin_user,))
+    origin_user_image = cur.fetchone()
 
     cur.execute(
         "SELECT postID, postContent FROM Post WHERE postUserID=? ORDER BY postTime DESC LIMIT 3",
@@ -332,6 +346,8 @@ def info(userID):
         activitys=activitys,
         user_image=user_image,
         user_id=str(userID),
+        origin_username=origin_username,
+        origin_user_image=origin_user_image,
     )
 
 
