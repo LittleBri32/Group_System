@@ -45,6 +45,15 @@
         }
 
         /*擺放大頭貼添加的*/
+
+        /*個人資料照*/
+        .profile-picture {
+            width: 250px;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        /*個人資料照*/
     </style>
 </head>
 
@@ -82,9 +91,8 @@
 
     <body>
         <h1>個人資料</h1>
-        <div class="profile-picture">
-            <img src="{{ url_for('static', filename='images/avatars/' + user_image[0]) }}" alt="大頭貼">
-        </div>
+        <img class="profile-picture" src="{{ url_for('static', filename='images/avatars/' + user_image[0]) }}"
+            alt="大頭貼">
         <form method="POST" action="{{ url_for('user.upload_photo') }}" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="photo">上傳照片</label>

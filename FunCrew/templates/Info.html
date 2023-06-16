@@ -45,6 +45,15 @@
         }
 
         /*擺放大頭貼添加的*/
+
+        /*個人資料照*/
+        .profile-picture {
+            width: 250px;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        /*個人資料照*/
     </style>
 </head>
 
@@ -71,13 +80,11 @@
     </head>
 
     <body>
-        <div class="profile-picture">
-            {% for img_path in user_image %}
-            <img src="{{url_for('static',filename=user_id+'.png') }}" alt="個人照片" />
-            {% endfor %}
-        </div>
 
-        <p>生日: {{ nickname }}</p>
+        <img class="profile-picture" src="{{ url_for('static', filename='images/avatars/' + user_image[0]) }}"
+            alt="個人照片" />
+        <h2>暱稱: {{ nickname }}</h2>
+        <p>生日: {{ birth }}</p>
         <p>性別: {{ gender }}</p>
         <p>電話: {{ cellphone }}</p>
         <!-- ################## -->

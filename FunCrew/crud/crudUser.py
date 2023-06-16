@@ -53,13 +53,12 @@ def sign_in():
         session["userID"] = userID
         ############################################# Gary
         try:
-            cur.execute(
-                "CREATE TABLE temp{}ViewCount (postID INTEGER PRIMARY KEY)".format(
-                    userID
-                )
-            )
+            cur.execute("DROP TABLE temp{}ViewCount;".format(userID))
         except:
             pass
+        cur.execute(
+            "CREATE TABLE temp{}ViewCount (postID INTEGER PRIMARY KEY)".format(userID)
+        )
         con.commit()
         con.close()
         #################################################################################
@@ -74,7 +73,12 @@ def logout():
     con = sql.connect("funCrew_db.db")
     con.row_factory = sql.Row
     cur = con.cursor()
-    # cur.execute("DROP TABLE temp{}ViewCount".format(session["userID"]))
+    try:
+        cur.execute("DROP TABLE temp{}ViewCount".format(session["userID"]))
+    except:
+        pass
+    con.commit()
+    con.close()
     ############################################################
     # 清除使用者的登入資訊
     session.pop("nickname", None)
@@ -312,8 +316,8 @@ def info(userID):
     cur.execute("SELECT nickname FROM User WHERE userID=?", (origin_user,))
     origin_username = cur.fetchone()[0]
 
-    cur.execute("SELECT cellphone,gender FROM User WHERE userID=?", (userID,))
-    cellphone, gender = cur.fetchone()
+    cur.execute("SELECT cellphone,gender, birth FROM User WHERE userID=?", (userID,))
+    cellphone, gender, birth = cur.fetchone()
     #################
     cur.execute(
         "SELECT Avg(Participant.score) FROM Participant, Activity WHERE organizerUserID=? AND participantActivityID=activityID",
@@ -341,6 +345,7 @@ def info(userID):
         nickname=get_nickname(userID),
         score=score,
         gender=gender,
+        birth=birth,
         cellphone=cellphone,
         posts=posts,
         activitys=activitys,

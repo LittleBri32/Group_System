@@ -46,7 +46,43 @@
             object-fit: cover;
         }
 
-        /*擺放大頭貼添加的*/
+        /*擺放大頭貼*/
+
+        /*擺放對話框*/
+        .chat-box-container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .chat-box {
+            border: 1px solid #ccc;
+            padding: 10px;
+            width: 30%;
+            /* 調整對話寬度，使其平均分配 */
+            font-size: 16px;
+        }
+
+        legend {
+            font-weight: bold;
+        }
+
+        @media screen and (max-width: 768px) {
+
+            /* 視窗縮小到 768px 以下ㄉ時候套用以下 CSS */
+            .chat-box-container {
+                flex-wrap: wrap;
+                /* 當視窗太小的時候，對話框折行顯示 */
+                justify-content: center;
+                /* 置中 */
+            }
+
+            .chat-box {
+                width: 90%;
+                margin-bottom: 10px;
+            }
+        }
+
+        /*擺放對話框*/
     </style>
 </head>
 
@@ -69,13 +105,27 @@
     </div>
 
     <h1>最新貼文</h1>
-    <div class="post">
-        {% for post in posts %}
-        <div>
-            <a href="/post/posts/{{post['postID']}}">{{ post['postTitle'] }}</a>
-            <a href="/user/info/{{post['postUserID']}}">By: {{ post['nickname'] }}</a>
-        </div>
-        {% endfor %}
+    <div class="chat-box-container">
+        <fieldset class="chat-box">
+            <legend><a href="/user/info/{{posts[0]['postUserID']}}">{{ posts[0]['nickname'] }}</a></legend>
+            <h2><a href="/post/posts/{{ posts[0]['postID'] }}"> {{ posts[0]['postTitle'] }}</a></h2>
+            <p>{{ posts[0]['postTime'] }}</p>
+            <p>{{ posts[0]['postContent'] }}</p>
+        </fieldset>
+
+        <fieldset class="chat-box">
+            <legend><a href="/user/info/{{posts[1]['postUserID']}}">{{ posts[1]['nickname'] }}</a></legend>
+            <h2><a href="/post/posts/{{ posts[1]['postID'] }}"> {{ posts[1]['postTitle'] }}</a></h2>
+            <p>{{ posts[1]['postTime'] }}</p>
+            <p>{{ posts[1]['postContent'] }}</p>
+        </fieldset>
+
+        <fieldset class="chat-box">
+            <legend><a href="/user/info/{{posts[2]['postUserID']}}">{{ posts[2]['nickname'] }}</a></legend>
+            <h2><a href="/post/posts/{{ posts[2]['postID'] }}"> {{ posts[2]['postTitle'] }}</a></h2>
+            <p>{{ posts[2]['postTime'] }}</p>
+            <p>{{ posts[2]['postContent'] }}</p>
+        </fieldset>
     </div>
     <h3>　</h3>
     <h1>最新聚會</h1>
