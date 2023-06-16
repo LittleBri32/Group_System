@@ -45,8 +45,47 @@
             border-radius: 50%;
             object-fit: cover;
         }
-        /*擺放大頭貼添加的*/
 
+        .user-info a {
+            margin-left: 8px;
+            /* 頭貼和暱稱之間的間距 */
+        }
+
+        /*擺放對話框*/
+        .chat-box-container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .chat-box {
+            border: 1px solid #ccc;
+            padding: 10px;
+            width: 30%;
+            /* 調整對話寬度，使其平均分配 */
+            font-size: 16px;
+        }
+
+        legend {
+            font-weight: bold;
+        }
+
+        @media screen and (max-width: 768px) {
+
+            /* 視窗縮小到 768px 以下ㄉ時候套用以下 CSS */
+            .chat-box-container {
+                flex-wrap: wrap;
+                /* 當視窗太小的時候，對話框折行顯示 */
+                justify-content: center;
+                /* 置中 */
+            }
+
+            .chat-box {
+                width: 90%;
+                margin-bottom: 10px;
+            }
+        }
+
+        /*擺放對話框*/
     </style>
 </head>
 
@@ -59,42 +98,63 @@
             <button class="button">關於我們</button>
         </div>
         <div class="header-right">
-            <button class="button"><a href="/activity/hostActivity/home">發起活動</a></button>
+            <button class="button"><a href="/activity/hostActivity/home">主辦活動</a></button>
             <button class="button"><a href="/user/logout">登出</a></button>
-            <!-- <h4><a href="/user/personalInfo">{{ nickname }}</a></h4> -->
             <div class="user-info">
-                <h4>{{ nickname }}</h4>
+                <h4><a href="/user/personalInfo">{{ nickname }}</a></h4>
                 <img src="{{ avatar }}" alt="大頭貼">
             </div>
         </div>
     </div>
 
-    <h3>最新貼文</h3>
-    <div class="post">
-        {% for post in posts %}
+    <h1>最新貼文</h1>
+    <div class="chat-box-container">
+        <fieldset class="chat-box">
+            <legend>
+                <div class="user-info">
+                    <img src="{{ url_for('static', filename='images/avatars/' + posts[0]['image']) }}" alt="大頭貼">
+                    <a href="/user/info/{{ posts[0]['postUserID'] }}">{{ posts[0]['nickname'] }}</a>
+                </div>
+            </legend>
+            <h2><a href="/post/posts/{{ posts[0]['postID'] }}">{{ posts[0]['postTitle'] }}</a></h2>
+            <p>{{ posts[0]['postTime'] }}</p>
+            <p>{{ posts[0]['postContent'] }}</p>
+        </fieldset>
+
+        <fieldset class="chat-box">
+            <legend>
+                <div class="user-info">
+                    <img src="{{ url_for('static', filename='images/avatars/' + posts[1]['image']) }}" alt="大頭貼">
+                    <a href="/user/info/{{ posts[1]['postUserID'] }}">{{ posts[1]['nickname'] }}</a>
+                </div>
+            </legend>
+            <h2><a href="/post/posts/{{ posts[1]['postID'] }}">{{ posts[1]['postTitle'] }}</a></h2>
+            <p>{{ posts[1]['postTime'] }}</p>
+            <p>{{ posts[1]['postContent'] }}</p>
+        </fieldset>
+
+        <fieldset class="chat-box">
+            <legend>
+                <div class="user-info">
+                    <img src="{{ url_for('static', filename='images/avatars/' + posts[2]['image']) }}" alt="大頭貼">
+                    <a href="/user/info/{{ posts[2]['postUserID'] }}">{{ posts[2]['nickname'] }}</a>
+                </div>
+            </legend>
+            <h2><a href="/post/posts/{{ posts[2]['postID'] }}">{{ posts[2]['postTitle'] }}</a></h2>
+            <p>{{ posts[2]['postTime'] }}</p>
+            <p>{{ posts[2]['postContent'] }}</p>
+        </fieldset>
+    </div>
+
+    <h3>　</h3>
+    <h1>最新聚會</h1>
+    <div class="activity">
+        {% for activity in activities %}
         <div>
-            <span>By: {{ post['nickname'] }}</span>
-            <p>{{ post['postContent'] }}</p>
+            <h2>{{ activity['title'] }}</h2>
+            <p>By: {{ activity['nickname'] }}</p>
         </div>
         {% endfor %}
-    </div>
-    <h3>熱門貼文</h3>
-    <div class="post">
-        
-        <div>
-            <!-- {{nickname}} -->
-            {% for activity in info %}
-            <p>{{ name[activity['activityID']] }}</p>
-            <p><a href="/activity/show/{{activity['activityID']}}">{{ activity['title'] }}</a></p>
-            <p>{{ activity['area'] }}</p>
-            <p>{{ time[activity['activityID']] }}</p>
-            <p>{{ activity['Intro'] }}</p>
-            <form action="/activity/show/{{activity['activityID']}}">
-                <button>查看活動</button>
-            </form>
-            {% endfor %}
-        </div>
-        
     </div>
 
 
@@ -102,5 +162,3 @@
 
 
 </html>
-
-

@@ -5,7 +5,6 @@
     <title>貼文列表 - 相約美好聚會時光</title>
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <style>
-        
         .header {
             display: flex;
             justify-content: space-between;
@@ -29,21 +28,24 @@
             border: none;
         }
 
-        /*貼文樣式*/
-        /* .post {
-            margin-bottom: 20px;
-            border: 1px solid #ccc;
-            padding: 10px;
+        /*擺放大頭貼添加的*/
+        .user-info {
+            display: flex;
+            align-items: center;
         }
 
-        .post .info {
-            font-size: 12px;
-            color: #888;
+        .user-info h4 {
+            margin-right: 8px;
         }
 
-        .post .content {
-            margin-top: 10px;
-        } */
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /*擺放大頭貼添加的*/
     </style>
 </head>
 
@@ -51,13 +53,17 @@
     <div class="header">
         <div class="header-left">
             <button class="button"><a href="/home"> 🥂 </a></button>
-            <button class="button"><a href="/post/area">貼文</a></button>
+            <button class="button"><a href="/post/posts/newest">貼文</a></button>
             <button class="button">關於我們</button>
         </div>
         <div class="header-right">
             <button class="button"><a href="/activity/hostActivity/home">發起活動</a></button>
             <button class="button"><a href="/user/logout">登出</a></button>
-            <h4>{{ nickname }}</h4>
+            <!-- <h4><a href="/user/personalInfo">{{ nickname }}</a></h4> -->
+            <div class="user-info">
+                <h4>{{ nickname }}</h4>
+                <img src="{{ avatar }}" alt="大頭貼">
+            </div>
         </div>
     </div>
     <div class="title">
@@ -68,30 +74,31 @@
         <form action="/activity/submitActivity/create" method="POST">
             {% if fun == "update" %}
             <label for="title">聚會主題*</label><br>
-            <input id="title" name="title" value ="{{info[0]['title']}}" required><br>
+            <input id="title" name="title" value="{{info[0]['title']}}" required><br>
             <label for="Intro">描述*</label><br>
-            <input id="Intro" name="Intro" value ="{{info[0]['Intro']}}" required><br>
+            <input id="Intro" name="Intro" value="{{info[0]['Intro']}}" required><br>
             <label for="location">聚會地點*</label><br>
-            <input id="location" name="location" value ="{{info[0]['location']}}" required><br>
+            <input id="location" name="location" value="{{info[0]['location']}}" required><br>
             <label for="time">聚會時間*</label>
-            <input type="date" id="time" name="time" min="2023-06-20" value ="{{info[0]['time']}}" required><br>
+            <input type="date" id="time" name="time" min="2023-06-20" value="{{info[0]['time']}}" required><br>
             <label for="expireDate">報名期限*</label>
-            <input type="date" id="expireDate" name="expireDate" value ="{{info[0]['expireDate']}}" required><br>
+            <input type="date" id="expireDate" name="expireDate" value="{{info[0]['expireDate']}}" required><br>
             <label for="peopleLimited">人數上限*</label>
-            <input id="peopleLimited" name="peopleLimited" type="number" max="999" min="1" value="{{info[0]['peopleLimited']}}" required><br/>
+            <input id="peopleLimited" name="peopleLimited" type="number" max="999" min="1"
+                value="{{info[0]['peopleLimited']}}" required><br />
             <label for="fee">費用*</label>
             <input id="fee" name="fee" type="number" max="100000000" min="0" value="{{info[0]['fee']}}" required>
-            <br/>
+            <br />
             <label for="area">聚會城市*</label>
             <select id="area" name="area">
                 {% for i in cityList %}
-                    <option value="{{info[0]['area']}}">{{i}}</option>
+                <option value="{{info[0]['area']}}">{{i}}</option>
                 {% endfor %}
             </select><br>
             <label for="category">聚會類型*</label>
             <select id="category" name="category">
                 {% for i in categoryList %}
-                    <option value="{{info[0]['categoryList']}}">{{i}}</option>
+                <option value="{{info[0]['categoryList']}}">{{i}}</option>
                 {% endfor %}
             </select><br>
             {% else %}
@@ -100,26 +107,26 @@
             <label for="Intro">描述*</label><br>
             <input id="Intro" name="Intro" required><br>
             <label for="location">聚會地點*</label><br>
-            <input id="location" name="location"  required><br>
+            <input id="location" name="location" required><br>
             <label for="time">聚會時間*</label>
             <input type="date" id="time" name="time" min="2023-06-20" required><br>
             <label for="expireDate">報名期限*</label>
             <input type="date" id="expireDate" name="expireDate" required><br>
             <label for="peopleLimited">人數上限*</label>
-            <input id="peopleLimited" name="peopleLimited" type="number" max="999" min="1" required><br/>
+            <input id="peopleLimited" name="peopleLimited" type="number" max="999" min="1" required><br />
             <label for="fee">費用*</label>
             <input id="fee" name="fee" type="number" max="100000000" min="0" required>
-            <br/>
+            <br />
             <label for="area">聚會城市*</label>
             <select id="area" name="area">
                 {% for i in cityList %}
-                    <option value={{i}}>{{i}}</option>
+                <option value={{i}}>{{i}}</option>
                 {% endfor %}
             </select><br>
             <label for="category">聚會類型*</label>
             <select id="category" name="category">
                 {% for i in categoryList %}
-                    <option value={{i}}>{{i}}</option>
+                <option value={{i}}>{{i}}</option>
                 {% endfor %}
             </select><br>
             {% endif%}
@@ -132,12 +139,12 @@
 
             {% if fun == 'update' %}
             <button>重新發佈聚會</button>
-            {% else %}       
+            {% else %}
             <button>發佈聚會</button>
             {% endif %}
-            
+
         </form>
-        <br/>
+        <br />
         <button><a href="/home">回上一頁</a></button>
     </div>
 

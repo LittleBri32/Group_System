@@ -27,21 +27,24 @@
             border: none;
         }
 
-        /*貼文樣式*/
-        .post {
-            margin-bottom: 20px;
-            border: 1px solid #ccc;
-            padding: 10px;
+        /*擺放大頭貼添加的*/
+        .user-info {
+            display: flex;
+            align-items: center;
         }
 
-        .post .info {
-            font-size: 12px;
-            color: #888;
+        .user-info h4 {
+            margin-right: 8px;
         }
 
-        .post .content {
-            margin-top: 10px;
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
         }
+
+        /*擺放大頭貼添加的*/
     </style>
 </head>
 
@@ -49,13 +52,17 @@
     <div class="header">
         <div class="header-left">
             <button class="button"><a href="/home"> 🥂 </a></button>
-            <button class="button"><a href="/post/area">貼文</a></button>
+            <button class="button"><a href="/post/posts/newest">貼文</a></button>
             <button class="button">關於我們</button>
         </div>
         <div class="header-right">
-            <button class="button">主辦活動</button>
+            <button class="button"><a href="/activity/hostActivity/home">發起活動</a></button>
             <button class="button"><a href="/user/logout">登出</a></button>
-            <h4>{{ nickname }}</h4>
+            <!-- <h4><a href="/user/personalInfo">{{ nickname }}</a></h4> -->
+            <div class="user-info">
+                <h4>{{ nickname }}</h4>
+                <img src="{{ avatar }}" alt="大頭貼">
+            </div>
         </div>
     </div>
 

@@ -46,6 +46,25 @@
         .post .content {
             margin-top: 0px;
         }
+
+        /*擺放大頭貼添加的*/
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-info h4 {
+            margin-right: 8px;
+        }
+
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /*擺放大頭貼添加的*/
     </style>
 </head>
 
@@ -60,7 +79,10 @@
         <div class="header-right">
             <button class="button">主辦活動</button>
             <button class="button"><a href="/user/logout">登出</a></button>
-            <h4>{{ nickname }}</h4>
+            <div class="user-info">
+                <h4><a href="/user/personalInfo">{{ nickname }}</a></h4>
+                <img src="../../{{ avatar }}" alt="大頭貼">
+            </div>
         </div>
     </div>
     <br>
@@ -77,9 +99,12 @@
                 <input type="text" name="searching_value" placeholder="輸入標題或使用者名稱" required>
                 <input type="submit" name="post_search_button" value="搜尋">
             </form>
-            <button class="button"><a href="/post/create_post" style="text-decoration:none; color:black">發布貼文</a></button>
-            <button class="button"><a href="/post/posts/my_posts" style="text-decoration:none; color:black">我的貼文</a></button>
-            <button class="button"><a href="/post/my_comments" style="text-decoration:none; color:black">我的留言</a></button>
+            <button class="button"><a href="/post/create_post"
+                    style="text-decoration:none; color:black">發布貼文</a></button>
+            <button class="button"><a href="/post/posts/my_posts"
+                    style="text-decoration:none; color:black">我的貼文</a></button>
+            <button class="button"><a href="/post/my_comments"
+                    style="text-decoration:none; color:black">我的留言</a></button>
         </div>
     </div>
     <br>
@@ -105,51 +130,57 @@
     {% endif %}
 
     {% if searching_value %}
-        {% for post in posts %}
-        <div class="post">
-            <div class="content">
-                <a href="/post/posts/{{post['postID']}}?sortmethod={{sortmethod}}&searching_value={{searching_value}}" style="text-decoration:none; color:black">
-                    <p style="font-size:24px;">{{ post['postTitle'] }}</p>
-                    <p>{{ post['postContent'] }}</p>
-                </a>
-            </div>
-            <div class="info">
-                <span>{{ post['postTime'] }}</span>
-                <span>By: <a href="/user/info/{{post['postUserID']}}">{{ post['nickname'] }}</a></span>
-                <br><span>觀看次數：{{ post['postView'] }}</span>
-            </div>
-            <br>
-            {% if post['postUserID'] == userID %}
-            <div>
-                <button><a href="/post/posts/update_post/{{post['postID']}}" style="text-decoration:none; color:black">修改帖文</a></button>
-                <button><a href="/post/posts/delete_post/{{post['postID']}}" style="text-decoration:none; color:black">刪除帖文</a></button>
-            </div>
-            {% endif %}
+    {% for post in posts %}
+    <div class="post">
+        <div class="content">
+            <a href="/post/posts/{{post['postID']}}?sortmethod={{sortmethod}}&searching_value={{searching_value}}"
+                style="text-decoration:none; color:black">
+                <p style="font-size:24px;">{{ post['postTitle'] }}</p>
+                <p>{{ post['postContent'] }}</p>
+            </a>
         </div>
-        {% endfor %}
+        <div class="info">
+            <span>{{ post['postTime'] }}</span>
+            <span>By: <a href="/user/info/{{post['postUserID']}}">{{ post['nickname'] }}</a></span>
+            <br><span>觀看次數：{{ post['postView'] }}</span>
+        </div>
+        <br>
+        {% if post['postUserID'] == userID %}
+        <div>
+            <button><a href="/post/posts/update_post/{{post['postID']}}"
+                    style="text-decoration:none; color:black">修改帖文</a></button>
+            <button><a href="/post/posts/delete_post/{{post['postID']}}"
+                    style="text-decoration:none; color:black">刪除帖文</a></button>
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
     {% else %}
-        {% for post in posts %}
-        <div class="post">
-            <div class="content">
-                <a href="/post/posts/{{post['postID']}}?sortmethod={{sortmethod}}" style="text-decoration:none; color:black">
-                    <p style="font-size:24px;">{{ post['postTitle'] }}</p>
-                    <p>{{ post['postContent'] }}</p>
-                </a>
-            </div>
-            <div class="info">
-                <span>{{ post['postTime'] }}</span>
-                <span>By: <a href="/user/info/{{post['postUserID']}}">{{ post['nickname'] }}</a></span>
-                <br><span>觀看次數：{{ post['postView'] }}</span>
-            </div>
-            <br>
-            {% if post['postUserID'] == userID %}
-            <div>
-                <button><a href="/post/posts/update_post/{{post['postID']}}" style="text-decoration:none; color:black">修改帖文</a></button>
-                <button><a href="/post/posts/delete_post/{{post['postID']}}" style="text-decoration:none; color:black">刪除帖文</a></button>
-            </div>
-            {% endif %}
+    {% for post in posts %}
+    <div class="post">
+        <div class="content">
+            <a href="/post/posts/{{post['postID']}}?sortmethod={{sortmethod}}"
+                style="text-decoration:none; color:black">
+                <p style="font-size:24px;">{{ post['postTitle'] }}</p>
+                <p>{{ post['postContent'] }}</p>
+            </a>
         </div>
-        {% endfor %}
+        <div class="info">
+            <span>{{ post['postTime'] }}</span>
+            <span>By: <a href="/user/info/{{post['postUserID']}}">{{ post['nickname'] }}</a></span>
+            <br><span>觀看次數：{{ post['postView'] }}</span>
+        </div>
+        <br>
+        {% if (post['postUserID'] == userID) and (sortmethod != "searching") %}
+        <div>
+            <button><a href="/post/posts/update_post/{{post['postID']}}"
+                    style="text-decoration:none; color:black">修改帖文</a></button>
+            <button><a href="/post/posts/delete_post/{{post['postID']}}"
+                    style="text-decoration:none; color:black">刪除帖文</a></button>
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
     {% endif %}
 
 </body>
