@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{ post['postTitle'] }}</title>
+    <style>
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #f2f2f2;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .button {
+            margin-right: 16px;
+            border: none;
+        }
+
+        /*貼文樣式*/
+        .post {
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+
+        .post .info {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .post .content {
+            margin-top: 0px;
+        }
+
+        /*擺放大頭貼添加的*/
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-info h4 {
+            margin-right: 8px;
+        }
+
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /*擺放大頭貼*/
+
+        /*大外框*/
+        .post-wrapper {
+            border: 2px solid #ccc;
+            padding: 20px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        /* 留言區分隔線 */
+        .separator {
+            border-top: 5px solid #ccc;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div class="header-left">
+            <button class="button"><a href="/home"> 🥂 </a></button>
+            <button class="button"><a href="/post/posts/newest">貼文</a></button>
+            <button class="button">關於我們</button>
+        </div>
+        <div class="header-right">
+            <button class="button"><a href="/activity/hostActivity/home">主辦活動</a></button>
+            <button class="button"><a href="/user/logout">登出</a></button>
+            <div class="user-info">
+                <h4><a href="/user/personalInfo">{{ origin_username }}</a></h4></button>
+                <img src="{{ url_for('static', filename='images/avatars/' + origin_user_image[0]) }}" alt="大頭貼">
+            </div>
+        </div>
+    </div>
+
+    <div class="post-wrapper">
+        <div class="user-info">
+            <img src="{{ url_for('static', filename='images/avatars/' + user_image[0]) }}" alt="大頭貼">
+            <h4>　<a href="/user/info/{{post['postUserID']}}">{{ post['nickname'] }}</a>　{{ post['postTime'] }}</h4>
+        </div>
+        <h1>{{ post['postTitle'] }}</h1>
+        <p>{{ post['postContent'] }}</p>
+
+        <br><br>
+
+        {% if searching_value %}
+        <button><a href="/post/posts/{{sortmethod}}?searching_value={{searching_value}}">返回</a></button>
+        {% else %}
+        <button><a href="/post/posts/{{sortmethod}}">返回貼文</a></button>
+        {% endif %}
+        <p>觀看數：{{views}}</p>
+
+        <!-- 分隔線 -->
+        <div class="separator"></div>
+
+        <h2>留言區</h2>
+        <form action="/post/posts/{{ postID }}" method="post">
+            <div class="input">
+                <input type="text" name="content" placeholder="輸入留言內容" required>
+                <button type="submit">留言</button>
+            </div>
+        </form>
+        <br>
+        {% for comment in comments %}
+        <div class="post">
+            <div class="content">
+                <div class="user-info">
+                    <img src="{{ url_for('static', filename='images/avatars/' + comment['image']) }}" alt="大頭貼">　
+                    <p><a href="/user/info/{{ comment['commentUserID'] }}">{{ comment['nickname'] }}</a></p>
+                </div>
+                <p>{{ comment['commentContent'] }}</p>
+            </div>
+            <div class="info">
+                <span>{{ comment['commentTime'] }}</span>
+            </div>
+
+            {% if comment['commentUserID'] == userID %}
+            <div>
+                <button><a href="/post/posts/update_comment/{{ comment['commentID'] }}"
+                        style="text-decoration:none; color:black">修改留言</button>
+                <button><a href="/post/posts/delete_comment/{{ comment['commentID'] }}"
+                        style="text-decoration:none; color:black">刪除留言</button>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+</body>
