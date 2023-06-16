@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>首頁</title>
+    <style>
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #f2f2f2;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .button {
+            margin-right: 16px;
+            border: none;
+        }
+
+        /*擺放大頭貼添加的*/
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-info h4 {
+            margin-right: 8px;
+        }
+
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /*擺放大頭貼添加的*/
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div class="header-left">
+            <button class="button"><a href="/home"> 🥂 </a></button>
+            <button class="button"><a href="/activity/activities/signingUp">活動</a></button>
+            <button class="button"><a href="/post/posts/newest">貼文</a></button>
+            <button class="button">關於我們</button>
+        </div>
+        <div class="header-right">
+            <button class="button"><a href="/activity/hostActivity/home">發起活動</a></button>
+            <button class="button"><a href="/user/logout">登出</a></button>
+            <!-- <h4><a href="/user/personalInfo">{{ nickname }}</a></h4> -->
+            <div class="user-info">
+                <h4><a href="/user/personalInfo">{{ nickname }}</a></h4>
+                <img src="{{ avatar }}" alt="大頭貼">
+            </div>
+        </div>
+    </div>
+    <div class="Info">
+        <p>{{ info['hostName'] }}</p>
+        <p>{{ info['title'] }}</p>
+        <p>{{ info['area'] }}</p>
+        <p>{{ info['location'] }}</p>
+        <p>{{ info['Intro'] }}</p>
+        <p>{{ info['createDate'] }}</p>
+        <p>報名人數：{{ info['signUp'] }}</p>
+        <p>舉辦日期 {{ info['time'] }}</p>
+        <p>報名到期日 {{ info['expireDate'] }}</p>
+    </div>
+    <div class="changeActivity">
+        {% if session["userID"] == info["organizerUserID"] %}
+        <form action="/activity/delAct/{{info['activityID']}}" method="POST">
+            <button>刪除活動</button>
+        </form>
+        <a href="/activity/hostActivity/{{ info['activityID'] }}"><button>修改活動</button></a>
+        {% else %}
+        {% if session['userID'] not in member %}
+        <form action="/activity/signUpSuccess/{{ info['activityID'] }}" method="POST">
+            <button>報名活動</button>
+        </form>
+        {% endif %}
+        {% endif %}
+    </div>
+    {% if session['userID'] != info['organizerUserID'] and session['userID'] in member %}
+    <form action="/activity/rating/{{ info['activityID'] }}" method="POST">
+        <label for="rating">評分</label><br />
+        <select id="rating" name="rating" required>
+            {% for i in range(1,6) %}
+            <option value={{i}}>{{i}}</option>
+            {% endfor %}
+        </select><br>
+        <input type="submit" value="送出">
+    </form>
+    {% endif %}
+
+    <h3>留言區</h3>
+    <form action="/activity/comment/{{info['activityID']}}" method="POST">
+        <input type="text" id="comment" name="comment">
+        <input type="submit" value="留言">
+    </form>
+    {% for i in comment %}
+    <div>
+        <h2>{{nickname[i['discussionUserID']]}}</h2><!--  連結至個人主頁 -->
+        <p>{{i['discussionContent']}}</p>
+        <p>{{time[i['discussionUserID']]}}</p>
+        {% if i['discussionUserID'] == session['userID']%}
+        <form action="/activity/show/{{i['discussionID']}}" method="POST">
+            <input type="submit" value="修改留言">
+        </form>
+        <form action="/activity/delete/{{i['discussionID']}}" method="POST">
+            <input type="submit" value=刪除留言>
+        </form>
+        {% endif %}
+        <hr />
+
+    </div>
+    {% endfor %}
+
+
+</body>
+
+</html>
