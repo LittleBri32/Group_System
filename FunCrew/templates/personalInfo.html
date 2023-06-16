@@ -53,7 +53,33 @@
             object-fit: cover;
         }
 
-        /*個人資料照*/
+        /* 外部大方框 */
+        .container {
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        /* 左側樣式 */
+        .left-column {
+            padding: 20px;
+        }
+
+        /* 右側樣式 */
+        .right-column {
+            padding: 20px;
+        }
+
+        /* 根據視窗大小縮放 */
+        @media (max-width: 600px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .left-column,
+            .right-column {
+                flex: none;
+            }
+        }
     </style>
 </head>
 
@@ -85,55 +111,51 @@
         </div>
     </div>
 
-    <head>
-        <title>個人資料</title>
-    </head>
+    <div class="container">
+        <div class="left-column">
+            <h1>個人資料</h1>
+            <img class="profile-picture" src="{{ url_for('static', filename='images/avatars/' + user_image[0]) }}"
+                alt="大頭貼">
+            <form method="POST" action="{{ url_for('user.upload_photo') }}" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="image">上傳照片</label>
 
-    <body>
-        <h1>個人資料</h1>
-        <img class="profile-picture" src="{{ url_for('static', filename='images/avatars/' + user_image[0]) }}"
-            alt="大頭貼">
-        <form method="POST" action="{{ url_for('user.upload_photo') }}" enctype="multipart/form-data">
-            <div class="form-group">
-                <label for="image">上傳照片</label>
-
-                <input type="file" id="image" name="image" onchange="previewImage(event)"><br>
-                <img id="imagePreview" src="#" alt="你要修改的頭貼尚未上傳" style="max-width: 200px; max-height: 200px;"><br>
+                    <input type="file" id="image" name="image" onchange="previewImage(event)"><br>
+                    <img id="imagePreview" src="#" alt="你要修改的頭貼尚未上傳" style="max-width: 200px; max-height: 200px;"><br>
 
 
-                <!-- <input type="file" class="form-control-file" id="photo" name="photo" required> -->
-            </div>
-            <input type="submit" value="上傳" class="btn btn-primary">
-        </form>
-        <h2>暱稱: {{ nickname }}</h2>
-        <p>郵件: {{ person[7] }}</p>
-        <p>生日: {{ person[4] }}</p>
-        <p>性別: {{ person[3] }}</p>
-        <p>電話: {{ person[6] }}</p>
-        <p>評分: {{ score }}</p>
+                    <!-- <input type="file" class="form-control-file" id="photo" name="photo" required> -->
+                </div>
+                <input type="submit" value="上傳" class="btn btn-primary">
+            </form>
+            <p>暱稱: {{ nickname }}</p>
+            <p>郵件: {{ person[7] }}</p>
+            <p>生日: {{ person[4] }}</p>
+            <p>性別: {{ person[3] }}</p>
+            <p>電話: {{ person[6] }}</p>
+            <p>評分: {{ score }}</p>
 
-        <!-- 修改個人資料表單 -->
-        <button><a href="/user/update_personalInfo">修改個人資料</a></button>
-        <!-- personalInfo.html -->
+            <!-- 修改個人資料表單 -->
+            <button><a href="/user/update_personalInfo">修改個人資料</a></button>
+            <!-- personalInfo.html -->
+        </div>
 
+        <div class="right-column">
+            <h2>發布過的貼文</h2>
+            <ul>
+                {% for post in posts %}
+                <li><a href="/post/posts/{{ post[0] }}">{{ post[1] }}</a></li>
+                {% endfor %}
+            </ul>
+            <h2>發起的活動</h2>
+            <ul>
+                {% for activity in activitys %}
+                <li>{{ activity[0] }}</li>
+                {% endfor %}
+            </ul>
+        </div>
 
-
-
-
-
-        <h2>發布過的貼文</h2>
-        <ul>
-            {% for post in posts %}
-            <li><a href="/post/posts/{{ post[0] }}">{{ post[1] }}</a></li>
-            {% endfor %}
-        </ul>
-        <h2>發起的活動</h2>
-        <ul>
-            {% for activity in activitys %}
-            <li>{{ activity[0] }}</li>
-            {% endfor %}
-        </ul>
-    </body>
+    </div>
 
 </body>
 
