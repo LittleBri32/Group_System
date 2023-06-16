@@ -338,7 +338,7 @@ def info(userID):
     posts = cur.fetchall()
 
     cur.execute("SELECT title FROM Activity WHERE organizerUserID=?", (userID,))
-    activitys = cur.fetchall()
+    activities = cur.fetchall()
 
     return render_template(
         "Info.html",
@@ -348,7 +348,7 @@ def info(userID):
         birth=birth,
         cellphone=cellphone,
         posts=posts,
-        activitys=activitys,
+        activities=activities,
         user_image=user_image,
         user_id=str(userID),
         origin_username=origin_username,

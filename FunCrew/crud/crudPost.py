@@ -203,7 +203,7 @@ def post_detail(postID):
         # 取得當前時間
         postTime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-        # 將貼文存入資料庫
+        # 將評論存入資料庫
         con = sql.connect("funCrew_db.db")
         cur = con.cursor()
         cur.execute(

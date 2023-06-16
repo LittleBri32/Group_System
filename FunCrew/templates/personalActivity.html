@@ -52,6 +52,7 @@
     <div class="header">
         <div class="header-left">
             <button class="button"><a href="/home"> 🥂 </a></button>
+            <button class="button"><a href="/activity/activities/signingUp">活動</a></button>
             <button class="button"><a href="/post/posts/newest">貼文</a></button>
             <button class="button">關於我們</button>
         </div>
@@ -74,7 +75,7 @@
         <p>{{ info['createDate'] }}</p>
         <p>報名人數：{{ info['signUp'] }}</p>
         <p>舉辦日期 {{ info['time'] }}</p>
-        <p>到期日 {{ info['expireDate'] }}</p>
+        <p>報名到期日 {{ info['expireDate'] }}</p>
     </div>
     <div class="changeActivity">
         {% if session["userID"] == info["organizerUserID"] %}

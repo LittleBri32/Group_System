@@ -4,71 +4,11 @@
 <head>
     <title>貼文列表 - 相約美好聚會時光</title>
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-    <style>
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            background-color: #f2f2f2;
-        }
 
-        .header-left {
-            display: flex;
-            align-items: center;
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-        }
-
-        .button {
-            margin-right: 16px;
-            border: none;
-        }
-
-        /*擺放大頭貼添加的*/
-        .user-info {
-            display: flex;
-            align-items: center;
-        }
-
-        .user-info h4 {
-            margin-right: 8px;
-        }
-
-        .user-info img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        /*擺放大頭貼添加的*/
-    </style>
 </head>
 
 <body>
-    <div class="header">
-        <div class="header-left">
-            <button class="button"><a href="/home"> 🥂 </a></button>
-            <button class="button"><a href="/post/posts/newest">貼文</a></button>
-            <button class="button">關於我們</button>
-        </div>
-        <div class="header-right">
-            <button class="button"><a href="/activity/hostActivity/home">發起活動</a></button>
-            <button class="button"><a href="/user/logout">登出</a></button>
-            <!-- <h4><a href="/user/personalInfo">{{ nickname }}</a></h4> -->
-            <div class="user-info">
-                <h4>{{ nickname }}</h4>
-                <img src="{{ avatar }}" alt="大頭貼">
-            </div>
-        </div>
-    </div>
-    <div class="title">
-        <h2>主辦聚會</h2>
-    </div>
+    <h2>主辦聚會</h2>
 
     <div class="submitActivity">
         <form action="/activity/submitActivity/create" method="POST">

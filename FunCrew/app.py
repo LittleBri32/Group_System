@@ -63,19 +63,30 @@ def home():
             "SELECT * FROM Post, User WHERE postUserID = userID ORDER BY postTime DESC LIMIT 3"
         )
         posts = cur.fetchall()
+
         # 從資料庫中獲取最新的三個聚會
-        cur.execute(
-            "SELECT * FROM Activity, User WHERE organizerUserID = userID ORDER BY createTime DESC LIMIT 3"
-        )
-        activities = cur.fetchall()
-        # 關閉資料庫連線
-        con.close()
+        category = request.args.get("category")
+        try:
+            print(category)
+        except Exception as e:
+            category = "None"
+        categoryList = ["影音展演", "商業投資", "遊戲卡牌", "體驗學習", "旅行出遊", "其他"]
+        if category in categoryList:
+            sqlQuery = "SELECT * FROM Activity WHERE category = '%s'" % (category)
+        else:
+            sqlQuery = "SELECT * FROM Activity"
+        cur.execute(sqlQuery)
+        info = cur.fetchall()
+        # print(info[0]['category'])
+
         return render_template(
             "home.html",
             nickname=nickname,
             posts=posts,
             avatar=filename,
-            activities=activities,
+            info=info,
+            categoryList=categoryList,
+            category=category,
         )
     else:
         return render_template("login.html")

@@ -94,11 +94,11 @@
     <div class="header">
         <div class="header-left">
             <button class="button"><a href="/home"> 🥂 </a></button>
+            <button class="button"><a href="/activity/activities/signingUp">活動</a></button>
             <button class="button"><a href="/post/posts/newest">貼文</a></button>
             <button class="button">關於我們</button>
         </div>
         <div class="header-right">
-            <button class="button"><a href="/activity/hostActivity/home">主辦活動</a></button>
             <button class="button"><a href="/user/logout">登出</a></button>
             <div class="user-info">
                 <h4><a href="/user/personalInfo">{{ nickname }}</a></h4>
@@ -148,14 +148,24 @@
 
     <h3>　</h3>
     <h1>最新聚會</h1>
-    <div class="activity">
-        {% for activity in activities %}
-        <div>
-            <h2>{{ activity['title'] }}</h2>
-            <p>By: {{ activity['nickname'] }}</p>
-        </div>
-        {% endfor %}
-    </div>
+    <label for="category">聚會類型</label>
+    <form action="/home">
+        <select id="category" name="category">
+            {% for i in categoryList %}
+            <option value="{{i}}">{{i}}</option>
+            {% endfor %}
+        </select>
+        <button>搜尋</button>
+    </form>
+    <br>
+    {% for activity in info %}
+
+    <p>{{ activity['title'] }}</a></p>
+    <p>{{ activity['area'] }}</p>
+    <p>{{ activity['category'] }}</p>
+    <p>{{ activity['Intro'] }}</p>
+
+    {% endfor %}
 
 
 </body>
