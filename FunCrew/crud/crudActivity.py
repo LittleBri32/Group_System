@@ -154,8 +154,8 @@ def activity_detail(activityID):
         con.commit()
         con.close()
         return redirect(request.referrer)
-
-    return render_template(
+    try:
+       return render_template(
         "activity_detail.html",
         activity=activity,
         discussions=discussions,
@@ -167,6 +167,9 @@ def activity_detail(activityID):
         origin_user_image=origin_user_image,
         joint=joint,
     )
+    except Exception as e:
+        print(e)
+    
 
 
 # 我的活動
@@ -189,14 +192,19 @@ def my_activities():
     # 關閉資料庫連線
     con.commit()
     con.close()
-
-    # 傳遞貼文內容和使用者暱稱的函式到 posts.html 進行顯示
-    return render_template(
+    try:
+       return render_template(
         "activities.html",
         nickname=get_nickname(userID),
         my_activities=my_activities,
         avatar=get_avatar_path(userID),
-    )
+        )
+    except Exception as e:
+        print(e)
+        # con.rollback()
+        # msg = f"報名失敗！請確認你的資料。錯誤訊息：{str(e)}"
+    # 傳遞貼文內容和使用者暱稱的函式到 posts.html 進行顯示
+    
 
 
 # 顯示創建活動的頁面
