@@ -15,42 +15,20 @@
             position: absolute;
             top: 0px;
             left: 0px;
-
         }
 
         h1 {
             color: #818181;
-            /* text-align:center;  vertical-align:text-middle; */
             font-size: 35px;
-            /* font-family:Inter; */
             left: 10px;
             top: 10px;
-            width: 350px;
-            height: 42px;
             position: absolute;
             line-height: auto;
             border-style: hidden;
             outline: none;
         }
-
-        .center {
-            color: #ffffff;
-            text-align: center;
-            vertical-align: text-middle;
-            font-size: 25px;
-            font-family: Inter;
-            line-height: auto;
-            border-style: hidden;
-            outline: none;
-            left: 50%;
-            top: 134px;
-
-            /* position:absolute; */
-            width: 200px;
-        }
-
         .會員登入 {
-            font-family: inherit;
+            align-items: center;     
             color: #ffffff;
             text-align: center;
             vertical-align: text-middle;
@@ -58,12 +36,20 @@
             line-height: auto;
             border-style: hidden;
             outline: none;
-            left: 40%;
-            top: 134px;
+            top: 109px;
+            left: 25%;
             position: absolute;
-            width: 404px;
+            width: 50%;
         }
-
+        span {
+            color: #ffffff;
+            vertical-align: text-middle;
+            font-size: 25px;
+            font-family: Inter;
+            line-height: auto;
+            border-style: hidden;
+            outline: none;
+        }
         input {
             text-align: center;
             background-color: #ffffff;
@@ -75,7 +61,7 @@
             left: 399px;
         }
 
-        .button {
+        button {
             background-color: #ffb8d1;
             height: 65px;
             width: 200px;
@@ -86,6 +72,9 @@
             color: #ffffff;
 
         }
+        p{
+            color: red;
+        }
     </style>
 </head>
 
@@ -93,22 +82,22 @@
     <div class="title_bar">
         <h1>FunCrew</h1>
     </div>
-    <div class="會員登入">會員登入
+    <div class="會員登入">
+        <h3>會員登入</h3>
         <span class="center">
             <form action="/user/signin" method="POST">
-                <br />
                 <input type="text" name="email" placeholder="Email帳號" color=#b6b6b6d2 style="font-size:22px" /><br />
                 <input type="password" name="password" placeholder="密碼" color=#b6b6b6d2 style="font-size:22px" /><br />
-                <br />
+                <br/>
                 <button class="button" style="font-size: 30px;">登入</button>
                 {% if msg %}
                 <p>{{ msg }}</p>
+                {% else %}
+                <br>
                 {% endif %}
             </form>
-            <br />
             <button style="font-size: 30px; background-color: #3B413C; width: 200px; border: #3B413C;"><a href="/signup"
                     style="color:#ffffff">註冊會員</a></button>
-        </span>
         </span>
     </div>
 </body>

@@ -4,10 +4,48 @@
 <head>
     <title>貼文列表 - 相約美好聚會時光</title>
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-
+    <style>
+         .submitActivity{
+            /* align-items: center; */
+            /* width: 50%; */
+            text-align: center;
+        }
+        h2 {
+            font-size:xx-large;
+            color: white;
+            text-align: center;
+        }
+        label{
+            color: white;
+            font-size: x-large;
+        }
+        input{
+            border-radius: 5px;
+            width: 25%;
+            height: 30px;
+            font-size: x-large;
+        }
+        select{
+            width: 25%;
+            height: 30px;
+        }
+        button{
+            width: 20%;
+            height: 30px;
+            background-color: #FBF2C0;
+            border-radius: 10px;
+        }
+        a{
+            text-decoration: none;
+            color: #000;
+        }
+        p{
+            color: red;
+        }
+    </style>
 </head>
 
-<body>
+<body style="background-color:#3B413C;">
     <h2>主辦聚會</h2>
 
     <div class="submitActivity">
@@ -52,26 +90,27 @@
             <input id="Intro" name="Intro" required><br>
             <label for="location">聚會地點*</label><br>
             <input id="location" name="location" required><br>
-            <label for="time">聚會時間*</label>
+            <label for="time">聚會時間*</label><br>
             <input type="date" id="time" name="time" min="2023-06-20" required><br>
-            <label for="expireDate">報名期限*</label>
+            <label for="expireDate">報名期限*</label><br>
             <input type="date" id="expireDate" name="expireDate" min="2023-06-20" required><br>
-            <label for="peopleLimited">人數上限*</label>
+            <label for="peopleLimited">人數上限*</label><br>
             <input id="peopleLimited" name="peopleLimited" type="number" max="999" min="1" required><br />
-            <label for="fee">費用*</label>
+            <label for="fee">費用*</label><br>
             <input id="fee" name="fee" type="number" max="100000000" min="0" required><br />
-            <label for="area">聚會城市*</label>
+            <label for="area">聚會城市*</label><br>
             <select id="area" name="area">
                 {% for i in cityList %}
                 <option value={{i}}>{{i}}</option>
                 {% endfor %}
             </select><br>
-            <label for="category">聚會類型*</label>
+            <label for="category">聚會類型*</label><br>
             <select id="category" name="category">
                 {% for i in categoryList %}
                 <option value={{i}}>{{i}}</option>
                 {% endfor %}
             </select><br>
+            <br>
             <button>發佈聚會</button>
         </form>
         {% endif%}
@@ -79,11 +118,8 @@
         {% if msg %}
         <p>{{ msg }}</p>
         {% endif %}
-
-
-
         <br />
-        <button><a href="/home">回上一頁</a></button>
+       <a href="/home"><button>回上一頁</button></a></button>
     </div>
 
 </body>

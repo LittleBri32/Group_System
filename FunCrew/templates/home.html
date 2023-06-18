@@ -7,25 +7,39 @@
     <title>首頁</title>
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <style>
+        body{
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            margin: 0%;
+        }
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 10px;
-            background-color: #f2f2f2;
+            background-color: #ffb8d1;
+            /* height: 10%; */
+            /* position: absolute; */
+        }
+        .headers {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
         }
 
         .header-left {
             display: flex;
             align-items: center;
+            list-style: none;
         }
 
         .header-right {
             display: flex;
             align-items: center;
+            list-style: none;
         }
 
-        .button {
+        li {
             margin-right: 16px;
             border: none;
         }
@@ -95,7 +109,7 @@
         .left-column {
             width: 100%;
             padding: 20px;
-            background-color: #f2f2f2;
+            background-color:  #ffb8d1b8 ;;
         }
 
         .left-column h1 {
@@ -135,28 +149,37 @@
             background-color: #fff;
             margin-bottom: 20px;
         }
+        a{
+            text-decoration: none;
+            color: black;
+        }
+        a:hover{
+            text-decoration: underline;
+            /* text-decoration-color: grey; */
+            color: red;
+        }
     </style>
 </head>
 
 
 <body>
-    <div class="header">
-        <div class="header-left">
-            <button class="button"><a href="/home"> 🥂 </a></button>
-            <button class="button"><a href="/activity/activities/signingUp">活動</a></button>
-            <button class="button"><a href="/post/posts/newest">貼文</a></button>
-        </div>
-        <div class="header-right">
-            <button class="button"><a href="/user/logout">登出</a></button>
+    <div class="header" style="height: 50px;">
+        <ul class="header-left">
+            <li><a href="/home" style="font-size: 30px;"> 🥂 </a></li>
+            <li><a href="/activity/activities/signingUp">活動</a></li>
+            <li><a href="/post/posts/newest">貼文</a></li>
+        </ul>
+        <ul class="header-right">
+            <li><a href="/user/logout">登出</a></li>
             <div class="user-info">
-                <h4><a href="/user/personalInfo">{{ nickname }}</a></h4>
-                <img src="{{ avatar }}" alt="大頭貼">
+                <li><h4><a href="/user/personalInfo">{{ nickname }}</a></h4></li>
+                <li><img src="{{ avatar }}" alt="大頭貼" style="width: 40px; height: 40px;"></li>
             </div>
-        </div>
+        </ul>
     </div>
 
-    <h1>最新貼文</h1>
-    <div class="chat-box-container">
+    <h1 style="margin-left: 10px ;">最新貼文</h1>
+    <div class="chat-box-container" style="margin-left: 10px ;">
         <fieldset class="chat-box">
             <legend>
                 <div class="user-info">
@@ -195,9 +218,9 @@
     </div>
 
     <h3>　</h3>
-    <div class="container">
+    <div class="container" >
         <div class="left-column">
-            <div class="header">
+            <div class="headers">
 
                 {% if category %}
                 <h1 style="display: inline-block;">{{category}}的聚會</h1>
@@ -224,11 +247,10 @@
             {% for activity in info %}
             <div class="activity-wrapper">
                 <div class="activity">
-                    <a href="/activity/activities/activity_detail/{{activity['activityID']}}?show_methed=signingUp"
-                        style="text-decoration:none; color:black">
+                    <a href="/activity/activities/activity_detail/{{activity['activityID']}}?show_methed=signingUp">
                         <p style="font-size:24px;">{{ activity['title'] }}</p>
-                        <p>活動簡介：{{ activity['Intro'] }}</p>
                     </a>
+                    <p>活動簡介：{{ activity['Intro'] }}</p>
                 </div>
                 <p style="font-size:14px; color: rgb(255, 176, 4);">活動舉辦日期：{{ activity['time'] }}</p>
             </div>
