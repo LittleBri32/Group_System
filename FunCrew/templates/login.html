@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>登入頁面</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <style>
+        /* .center {
+            text-align: center;
+        } */
+        .title_bar {
+            background-color: #ffb8d1;
+            height: 109px;
+            width: 100%;
+            position: absolute;
+            top: 0px;
+            left: 0px;
+
+        }
+
+        h1 {
+            color: #818181;
+            /* text-align:center;  vertical-align:text-middle; */
+            font-size: 35px;
+            /* font-family:Inter; */
+            left: 10px;
+            top: 10px;
+            width: 350px;
+            height: 42px;
+            position: absolute;
+            line-height: auto;
+            border-style: hidden;
+            outline: none;
+        }
+
+        .center {
+            color: #ffffff;
+            text-align: center;
+            vertical-align: text-middle;
+            font-size: 25px;
+            font-family: Inter;
+            line-height: auto;
+            border-style: hidden;
+            outline: none;
+            left: 50%;
+            top: 134px;
+
+            /* position:absolute; */
+            width: 200px;
+        }
+
+        .會員登入 {
+            font-family: inherit;
+            color: #ffffff;
+            text-align: center;
+            vertical-align: text-middle;
+            font-size: 45px;
+            line-height: auto;
+            border-style: hidden;
+            outline: none;
+            left: 40%;
+            top: 134px;
+            position: absolute;
+            width: 404px;
+        }
+
+        input {
+            text-align: center;
+            background-color: #ffffff;
+            height: 50px;
+            width: 300px;
+            filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+            border: 5px solid rgba(0, 0, 0, 0.2199999988079071);
+            top: 400px;
+            left: 399px;
+        }
+
+        .button {
+            background-color: #ffb8d1;
+            height: 65px;
+            width: 200px;
+        }
+
+        a {
+            text-decoration-line: none;
+            color: #ffffff;
+
+        }
+    </style>
+</head>
+
+<body style="background-color:#3B413C;">
+    <div class="title_bar">
+        <h1>FunCrew</h1>
+    </div>
+    <div class="會員登入">會員登入
+        <span class="center">
+            <form action="/user/signin" method="POST">
+                <br />
+                <input type="text" name="email" placeholder="Email帳號" color=#b6b6b6d2 style="font-size:22px" /><br />
+                <input type="password" name="password" placeholder="密碼" color=#b6b6b6d2 style="font-size:22px" /><br />
+                <br />
+                <button class="button" style="font-size: 30px;">登入</button>
+                {% if msg %}
+                <p>{{ msg }}</p>
+                {% endif %}
+            </form>
+            <br />
+            <button style="font-size: 30px; background-color: #3B413C; width: 200px; border: #3B413C;"><a href="/signup"
+                    style="color:#ffffff">註冊會員</a></button>
+        </span>
+        </span>
+    </div>
+</body>
+
+</html>
