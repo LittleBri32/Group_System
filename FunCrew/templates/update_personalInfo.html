@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>修改個人資料</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <style>
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #f2f2f2;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .button {
+            margin-right: 16px;
+            border: none;
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <h1>修改個人資料</h1>
+
+    <!-- 修改個人資料表單 -->
+    <form action="{{ url_for('user.update_personalInfo') }}" method="POST">
+        <label for="nickname">暱稱：</label>
+        <input type="text" name="nickname" id="nickname" value="{{ person[2] }}" required>
+        <br>
+        <label for="birth">生日：</label>
+        <input type="date" name="birth" id="birth" value="{{ person[4] }}" required>
+        <br>
+        <label for="gender">性別：</label>
+        <select name="gender" id="gender" required>
+            <option value="M" {% if person[3]=='M' %}selected{% endif %}>M</option>
+            <option value="F" {% if person[3]=='F' %}selected{% endif %}>F</option>
+        </select>
+        <br>
+        <label for="cellphone">手機號碼：</label>
+        <input type="interger" pattern="09\d{8}" name="cellphone" id="cellphone" value="{{ person[5] }}"
+            required><span>請輸入09開頭的10位數字</span>
+        <br>
+        <input type="submit" name="save" value="儲存修改">
+    </form>
+</body>
+
+</html>
