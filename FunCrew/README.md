@@ -21,14 +21,14 @@ python app.py
 ```
 visit [http://127.0.0.1:8115](http://127.0.0.1:8115)
 
-#其他檔案
-###與活動相關的動作
+# 其他檔案
+### 與活動相關的動作
 crudActivity.py
-###與貼文相關的動作
+### 與貼文相關的動作
 crudPost.py
-###與使用者相關的動作
+### 與使用者相關的動作
 crudUser.py
-###pages
+### pages
 */activities
 */activity_detail
 */Create_post
