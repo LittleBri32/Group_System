@@ -18,7 +18,7 @@ funCrew_db.db
 ```
 python app.py
 ```
-visit [http://127.0.0.1:8115](http://127.0.0.1:8115)
+visit [http://127.0.0.1:8115]
 
 # 其他檔案
 ### 與活動相關的動作
