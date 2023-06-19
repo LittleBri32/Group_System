@@ -29,31 +29,31 @@ crudPost.py
 ### 與使用者相關的動作
 crudUser.py
 ### pages
-*/activities
-*/activity_detail
-*/Create_post
-*/delete_comment
-*/delete_post
-*/forgot_password
-*/forgot_password_success
-*/home
-*/hostActivity
-*/Info
-*/login
-*/my_comments
-*/personalActivity
-*/personalInfo
-*/post_detail
-*/postArea
-*/posts
-*/register
-*/registration_success
-*/signUpSuccess
-*/update_comment
-*/update_discussion
-*/update_personalInfo
-*/update_post
-*/ztest
+* /activities
+* /activity_detail
+* /Create_post
+* /delete_comment
+* /delete_post
+* /forgot_password
+* /forgot_password_success
+* /home
+* /hostActivity
+* /Info
+* /login
+* /my_comments
+* /personalActivity
+* /personalInfo
+* /post_detail
+* /postArea
+* /posts
+* /register
+* /registration_success
+* /signUpSuccess
+* /update_comment
+* /update_discussion
+* /update_personalInfo
+* /update_post
+* /ztest
 
 
 
