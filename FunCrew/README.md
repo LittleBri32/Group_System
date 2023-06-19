@@ -12,7 +12,7 @@ pip install Flask
 ```
 ### database
 ```
-funCrew_db
+funCrew_db.db
 ```
 ### start
 ```
