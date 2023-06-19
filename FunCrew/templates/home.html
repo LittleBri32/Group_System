@@ -11,7 +11,7 @@
             font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
         }
         h1{
-            margin: 20px;
+            margin-left: 40px;
             color: white;
         }
         .header {
@@ -71,13 +71,16 @@
         }
         /*擺放對話框*/
         .chat-box-container {
-            margin: 20px;
+            margin: 40px;
             display: flex;
             justify-content: space-between;
             
         }
-
-        .chat-box {
+        fieldset .user-info a{
+            color: rgb(77, 76, 76);
+        }
+        fieldset {
+            border-radius: 20px;
             background-color: white;
             border: 1px solid #ccc;
             padding: 10px;
@@ -119,12 +122,12 @@
             background-color:#3B413C;
         }
 
-        .left-column h1 {
+        /* .left-column h1 {
             margin-bottom: 10px;
-        }
+        } */
 
         .left-column label {
-            display: block;
+            /* display: block; */
             margin-bottom: 10px;
         }
 
@@ -132,6 +135,7 @@
             width: 100%;
             padding: 5px;
             margin-bottom: 10px;
+            font-size: medium;
         }
 
         .left-column button {
@@ -185,51 +189,48 @@
     <h1>最新貼文</h1>
     <div class="chat-box-container" >
         <fieldset class="chat-box">
-            <legend>
+            <!-- <legend> -->
                 <div class="user-info">
                     <img src="{{ url_for('static', filename='images/avatars/' + posts[0]['image']) }}" alt="大頭貼">
                     <a href="/user/info/{{ posts[0]['postUserID'] }}">{{ posts[0]['nickname'] }}</a>
                 </div>
-            </legend>
+            <!-- </legend> -->
             <h2><a href="/post/posts/{{ posts[0]['postID'] }}">{{ posts[0]['postTitle'] }}</a></h2>
             <p>{{ posts[0]['postTime'] }}</p>
             <p>{{ posts[0]['postContent'] }}</p>
         </fieldset>
 
         <fieldset class="chat-box">
-            <legend>
+            <!-- <legend> -->
                 <div class="user-info">
                     <img src="{{ url_for('static', filename='images/avatars/' + posts[1]['image']) }}" alt="大頭貼">
                     <a href="/user/info/{{ posts[1]['postUserID'] }}">{{ posts[1]['nickname'] }}</a>
                 </div>
-            </legend>
+            <!-- </legend> -->
             <h2><a href="/post/posts/{{ posts[1]['postID'] }}">{{ posts[1]['postTitle'] }}</a></h2>
             <p>{{ posts[1]['postTime'] }}</p>
             <p>{{ posts[1]['postContent'] }}</p>
         </fieldset>
 
         <fieldset class="chat-box">
-            <legend>
+            <!-- <legend> -->
                 <div class="user-info">
                     <img src="{{ url_for('static', filename='images/avatars/' + posts[2]['image']) }}" alt="大頭貼">
                     <a href="/user/info/{{ posts[2]['postUserID'] }}">{{ posts[2]['nickname'] }}</a>
                 </div>
-            </legend>
+            <!-- </legend> -->
             <h2><a href="/post/posts/{{ posts[2]['postID'] }}">{{ posts[2]['postTitle'] }}</a></h2>
             <p>{{ posts[2]['postTime'] }}</p>
             <p>{{ posts[2]['postContent'] }}</p>
         </fieldset>
     </div>
-
-    <h3>　</h3>
     <div class="container">
         <div class="left-column">
             <div class="headers">
-
                 {% if category %}
-                <h1 style="display: inline-block;">{{category}}的聚會</h1>
+                <h1 style="display: inline-block; margin: 20px;">{{category}}的聚會</h1>
                 {% else %}
-                <h1 style="display: inline-block;">所有的聚會</h1>
+                <h1 style="display: inline-block; margin: 20px;" >所有的聚會</h1>
                 {% endif %}
 
                 <form action="/home" style="display: inline-block;">

@@ -58,28 +58,29 @@
             <input id="Intro" name="Intro" value="{{info[0]['Intro']}}" required><br>
             <label for="location">聚會地點*</label><br>
             <input id="location" name="location" value="{{info[0]['location']}}" required><br>
-            <label for="time">聚會時間*</label>
+            <label for="time">聚會時間*</label><br>
             <input type="date" id="time" name="time" min="2023-06-20" value="{{info[0]['time']}}" required><br>
-            <label for="expireDate">報名期限*</label>
+            <label for="expireDate">報名期限*</label><br>
             <input type="date" id="expireDate" name="expireDate" min="2023-06-20" value="{{info[0]['expireDate']}}"
                 required><br>
-            <label for="peopleLimited">人數上限*</label>
+            <label for="peopleLimited">人數上限*</label><br>
             <input id="peopleLimited" name="peopleLimited" type="number" max="999" min="1"
                 value="{{info[0]['peopleLimited']}}" readonly><br />
-            <label for="fee">費用*</label>
+            <label for="fee">費用*</label><br>
             <input id="fee" name="fee" type="number" max="100000000" min="0" value="{{info[0]['fee']}}" required><br />
-            <label for="area">聚會城市*</label>
+            <label for="area">聚會城市*</label><br>
             <select id="area" name="area">
                 {% for i in cityList %}
                 <option value="{{info[0]['area']}}">{{i}}</option>
                 {% endfor %}
             </select><br>
-            <label for="category">聚會類型*</label>
+            <label for="category">聚會類型*</label><br>
             <select id="category" name="category">
                 {% for i in categoryList %}
                 <option>{{i}}</option>
                 {% endfor %}
             </select><br>
+            <br>
             <button>重新發佈聚會</button>
         </form>
         {% else %}

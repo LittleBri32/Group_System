@@ -2,17 +2,46 @@
 <html>
 
 <head>
-    <title>貼文集合區</title>
+    <title>活動集合區</title>
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <style>
-        .header ul{
+        body{
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            margin: 0;
+        }
+        a {
+            text-decoration-line: none;
+            color: black;
+        }
+        a:hover{
+            color: red;
+        }
+        h1{
+            margin-left: 20px;
+        }
+        .nav_bar ul{
             display: flex;
             list-style: none;
         }
-        .header li{
+        .nav_bar li{
             font-weight: bold;
             margin-right: 16px;
             border: none;
+        }
+        .nav_bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #ffb8d1;
+            height: 109px;
+            width: 100%;
+            top: 0px;
+            font-weight: bold;
+        }
+        .nav_bar .header-right{
+            display: flex;
+            align-items: center;
+            margin-right: 10px;
         }
         .header {
             display: flex;
@@ -20,6 +49,14 @@
             align-items: center;
             padding: 10px;
             background-color: #f2f2f2;
+            top: 109px;
+        }
+        .header button{
+            font-size:medium;
+        }
+        .header .header-right a:hover{
+            color: rgb(133, 10, 10);
+            text-decoration: solid;
         }
 
         .post-header {
@@ -39,6 +76,7 @@
         .button {
             margin-right: 16px;
             border: none;
+            border-radius: 5px;
         }
 
         /*活動貼文樣式*/
@@ -80,14 +118,14 @@
 
 
 <body>
-    <div class="header">
+    <div class="nav_bar">
         <ul>
             <li><a href="/home"> 🥂 </a></li>
             <li><a href="/activity/activities/signingUp">活動</a></li>
             <li><a href="/post/posts/newest">貼文</a></li>
         </ul>
         <div class="header-right">
-            <button class="button"><a href="/user/logout">登出</a></button>
+            <li style="list-style: none;"><a href="/user/logout">登出</a></li>
             <div class="user-info">
                 <h4><a href="/user/personalInfo">{{ nickname }}</a></h4>
                 <img src="../../{{ avatar }}" alt="大頭貼">
@@ -103,11 +141,11 @@
                 <button class="submit" name="end"><a href="/activity/activities/end">活動已結束</a></button>
             </form>
         </div>
-        <div class="header-right">
-            <button class="button"><a href="/activity/hostActivity/home"
-                    style="text-decoration:none; color:black">主辦活動</a></button>
-            <button class="button"><a href="/activity/activities/my_activities"
-                    style="text-decoration:none; color:black">我的活動</a></button>
+        <div class="header-right" >
+            <button class="button"><a href="/activity/hostActivity/home" style="text-decoration:none; color:black">
+                主辦活動</a></button>
+            <button class="button"><a href="/activity/activities/my_activities" style="text-decoration:none; color:black">
+                我的活動</a></button>
         </div>
     </div>
     <br>
@@ -124,7 +162,7 @@
 
 
     {% for activity in activities %}
-    <div class="post">
+    <div class="post" style="margin-left: 20px; margin-right: 20px;">
         <div class="content">
             <a href="/activity/activities/activity_detail/{{activity['activityID']}}?show_methed={{show_methed}}"
                 style="text-decoration:none; color:black">
