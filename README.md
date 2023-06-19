@@ -18,9 +18,12 @@ funCrew_db.db
 ```
 python app.py
 ```
-visit http://127.0.0.1:8115
 
-# 其他檔案
+# ER-model
+
+# Relational Schema
+
+# Files
 ### 與活動相關的動作
 crudActivity.py
 ### 與貼文相關的動作
@@ -30,7 +33,7 @@ crudUser.py
 ### pages
 * /activities
 * /activity_detail
-* /Create_post
+* /create_post
 * /delete_comment
 * /delete_post
 * /home
@@ -50,31 +53,7 @@ crudUser.py
 * /update_personalInfo
 * /update_post
 
-
-
-
-
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#Contributor
-
+# Contributors
 |  系級  |  組員  |    學號    |
 |-------|--------|------------|
 | 資碩一 | 鄞雋衡 | 111753135  |
