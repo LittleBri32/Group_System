@@ -7,24 +7,42 @@
     <title>首頁</title>
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <style>
+        body{
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+        h1{
+            margin: 20px;
+            color: white;
+        }
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px;
-            background-color: #f2f2f2;
+            background-color: #ffb8d1;
+            height: 109px;
+            width: 100%;
+            top: 0px;
+            font-weight: bold;
         }
-
-        .header-left {
+        .headers{
             display: flex;
+            justify-content: space-between;
             align-items: center;
+            
         }
-
         .header-right {
             display: flex;
             align-items: center;
+            margin-right: 10px;
         }
-
+        ul{
+            display: flex;
+            list-style: none;
+        }
+        li{
+            margin-right: 16px;
+            border: none;
+        }
         .button {
             margin-right: 16px;
             border: none;
@@ -51,14 +69,16 @@
             margin-left: 8px;
             /* 頭貼和暱稱之間的間距 */
         }
-
         /*擺放對話框*/
         .chat-box-container {
+            margin: 20px;
             display: flex;
             justify-content: space-between;
+            
         }
 
         .chat-box {
+            background-color: white;
             border: 1px solid #ccc;
             padding: 10px;
             width: 30%;
@@ -90,12 +110,13 @@
         .container {
             display: flex;
             justify-content: space-between;
+            margin: 20px;
         }
 
         .left-column {
             width: 100%;
             padding: 20px;
-            background-color: #f2f2f2;
+            background-color:#3B413C;
         }
 
         .left-column h1 {
@@ -135,28 +156,34 @@
             background-color: #fff;
             margin-bottom: 20px;
         }
+        a{
+            text-decoration: none;
+            color: black;
+        }
+        a:hover{
+            color: red;
+        }
     </style>
 </head>
 
 
-<body>
+<body style="margin: 0px; background-color: #3B413C;">
     <div class="header">
-        <div class="header-left">
-            <button class="button"><a href="/home"> 🥂 </a></button>
-            <button class="button"><a href="/activity/activities/signingUp">活動</a></button>
-            <button class="button"><a href="/post/posts/newest">貼文</a></button>
-        </div>
+            <ul>
+                <li><a href="/home"> 🥂 </a></li>
+                <li><a href="/activity/activities/signingUp">活動</a></li>
+                <li><a href="/post/posts/newest">貼文</a></li>
+            </ul>
         <div class="header-right">
-            <button class="button"><a href="/user/logout">登出</a></button>
+            <li style="list-style: none;"><a href="/user/logout">登出</a></li>
             <div class="user-info">
                 <h4><a href="/user/personalInfo">{{ nickname }}</a></h4>
                 <img src="{{ avatar }}" alt="大頭貼">
             </div>
         </div>
     </div>
-
     <h1>最新貼文</h1>
-    <div class="chat-box-container">
+    <div class="chat-box-container" >
         <fieldset class="chat-box">
             <legend>
                 <div class="user-info">
@@ -197,7 +224,7 @@
     <h3>　</h3>
     <div class="container">
         <div class="left-column">
-            <div class="header">
+            <div class="headers">
 
                 {% if category %}
                 <h1 style="display: inline-block;">{{category}}的聚會</h1>
@@ -206,7 +233,7 @@
                 {% endif %}
 
                 <form action="/home" style="display: inline-block;">
-                    <label for="category">聚會類型</label>
+                    <label for="category" style="color: white;">聚會類型</label>
                     <select id="category" name="category" style="width: 200px;">
                         {% for i in categoryList %}
                         {% if i == category %}
@@ -235,8 +262,6 @@
             {% endfor %}
         </div>
     </div>
-
-
 </body>
 
 </html>

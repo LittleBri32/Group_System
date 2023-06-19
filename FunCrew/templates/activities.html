@@ -5,6 +5,15 @@
     <title>貼文集合區</title>
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <style>
+        .header ul{
+            display: flex;
+            list-style: none;
+        }
+        .header li{
+            font-weight: bold;
+            margin-right: 16px;
+            border: none;
+        }
         .header {
             display: flex;
             justify-content: space-between;
@@ -72,11 +81,11 @@
 
 <body>
     <div class="header">
-        <div class="header-left">
-            <button class="button"><a href="/home"> 🥂 </a></button>
-            <button class="button"><a href="/activity/activities/signingUp">活動</a></button>
-            <button class="button"><a href="/post/posts/newest">貼文</a></button>
-        </div>
+        <ul>
+            <li><a href="/home"> 🥂 </a></li>
+            <li><a href="/activity/activities/signingUp">活動</a></li>
+            <li><a href="/post/posts/newest">貼文</a></li>
+        </ul>
         <div class="header-right">
             <button class="button"><a href="/user/logout">登出</a></button>
             <div class="user-info">

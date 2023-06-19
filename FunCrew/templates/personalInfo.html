@@ -5,22 +5,43 @@
     <title>首頁</title>
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <style>
+        body{
+            background-color: #D9D9D9;;
+            margin: 0px;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+        a{
+            text-decoration: none;
+            color: black;
+        }
+        a:hover{
+            color: red;
+            text-decoration: underline;
+        }
+        
+        .header ul{
+            display: flex;
+            list-style: none;
+        }
+        .header li{
+            font-weight: bold;
+            margin-right: 16px;
+            border: none;
+        }
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px;
-            background-color: #f2f2f2;
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
+            background-color: #ffb8d1;
+            height: 100px;
+            width: 100%;
+            top: 0px;
         }
 
         .header-right {
             display: flex;
             align-items: center;
+            margin-right: 10px;
         }
 
         .button {
@@ -57,7 +78,7 @@
         /* 外部大方框 */
         .container {
             display: flex;
-            justify-content: flex-start;
+            justify-content:center;
         }
 
         /* 左側樣式 */
@@ -97,13 +118,13 @@
 
 <body>
     <div class="header">
-        <div class="header-left">
-            <button class="button"><a href="/home"> 🥂 </a></button>
-            <button class="button"><a href="/activity/activities/signingUp">活動</a></button>
-            <button class="button"><a href="/post/posts/newest">貼文</a></button>
-        </div>
+        <ul>
+            <li><a href="/home"> 🥂 </a></li>
+            <li><a href="/activity/activities/signingUp">活動</a></li>
+            <li><a href="/post/posts/newest">貼文</a></li>
+        </ul>
         <div class="header-right">
-            <button class="button"><a href="/user/logout">登出</a></button>
+            <li style="list-style: none;"><a href="/user/logout">登出</a></li>
             <div class="user-info">
                 <h4><a href="/user/personalInfo">{{ nickname }}</a></h4></button>
                 <img src="{{ url_for('static', filename='images/avatars/' + user_image[0]) }}" alt="大頭貼">
