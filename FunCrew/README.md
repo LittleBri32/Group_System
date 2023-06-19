@@ -33,8 +33,6 @@ crudUser.py
 * /Create_post
 * /delete_comment
 * /delete_post
-* /forgot_password
-* /forgot_password_success
 * /home
 * /hostActivity
 * /Info
@@ -43,7 +41,6 @@ crudUser.py
 * /personalActivity
 * /personalInfo
 * /post_detail
-* /postArea
 * /posts
 * /register
 * /registration_success
@@ -52,7 +49,7 @@ crudUser.py
 * /update_discussion
 * /update_personalInfo
 * /update_post
-* /ztest
+
 
 
 
