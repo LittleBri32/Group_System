@@ -20,8 +20,10 @@ python app.py
 ```
 
 # ER-model
+![](FunCrew/static/database-ER.png)
 
 # Relational Schema
+![](FunCrew/static/database-Schema.png)
 
 # Files
 ### 與活動相關的動作
@@ -52,6 +54,7 @@ crudUser.py
 * /update_discussion
 * /update_personalInfo
 * /update_post
+
 
 # Contributors
 |  系級  |  組員  |    學號    |
