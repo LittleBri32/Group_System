@@ -95,32 +95,32 @@ def logout():
 
 
 # 忘記密碼處理
-@user_bp.route("/forgotPasswordPost", methods=["POST"])
-def forgotPasswordPost():
-    con = None
-    try:
-        con = sql.connect("funCrew_db.db")
-        con.row_factory = sql.Row
-        cur = con.cursor()
+# @user_bp.route("/forgotPasswordPost", methods=["POST"])
+# def forgotPasswordPost():
+#     con = None
+#     try:
+#         con = sql.connect("funCrew_db.db")
+#         con.row_factory = sql.Row
+#         cur = con.cursor()
 
-        if request.method == "POST":
-            email = request.form["email"]
-            cur.execute("SELECT * FROM User WHERE email=?", (email,))
-            con.commit()
+#         if request.method == "POST":
+#             email = request.form["email"]
+#             cur.execute("SELECT * FROM User WHERE email=?", (email,))
+#             con.commit()
 
-            people = cur.fetchall()
-            if len(people) == 0:
-                msg = "沒有這個電子信箱的用戶，請重新輸入！"
-                return render_template("forgot_password.html", msg=msg)
+#             people = cur.fetchall()
+#             if len(people) == 0:
+#                 msg = "沒有這個電子信箱的用戶，請重新輸入！"
+#                 return render_template("forgot_password.html", msg=msg)
 
-            return redirect("/forgot_password_success")
+#             return redirect("/forgot_password_success")
 
-    except Exception as e:
-        msg = "發生錯誤：" + str(e)
-        return render_template("forgot_password.html", msg=msg)
-    finally:
-        if con:
-            con.close()
+#     except Exception as e:
+#         msg = "發生錯誤：" + str(e)
+#         return render_template("forgot_password.html", msg=msg)
+#     finally:
+#         if con:
+#             con.close()
 
 
 # 註冊處理
