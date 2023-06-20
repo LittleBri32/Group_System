@@ -159,7 +159,7 @@
             <p style="margin-top: 0%;">活動地點：{{ activity['location'] }}</p>
         </div>
         <p>目前報名人數：{{ count_participants[0] }}</p>
-        {% if count_participants[0] > activity['peopleLimited']%}
+        {% if count_participants[0] >= activity['peopleLimited']%}
         <p>⚠️ 已報名人數已達上限 ⚠️</p>
         {% endif %}
         <p>報名人數上限：{{ activity['peopleLimited']}}</p>
