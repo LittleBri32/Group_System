@@ -25,6 +25,9 @@ python app.py
 - 當參加的活動舉辦完後，可以進行評分
 - 用戶也可在貼文區發文，並在文章下面留言，互相交流
 
+# 系統架構圖
+![](FunCrew/static/framework_structure.png)
+
 # ER-model
 ![](FunCrew/static/database-ER.png)
 
